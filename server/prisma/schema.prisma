@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Ticket {
+  id               String         @id @default(uuid())
+  shortDescription String
+  description      String?        @db.LongText
+  state            TicketState    @default(NEW)
+  priority         TicketPriority
+  assignedToId     String?
+  assignedTo       User?          @relation(name: "AssignedToUser", fields: [assignedToId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ticket_assignedToUser")
+  // createdById      String
+  // createdBy        User           @relation(name: "CreatedByUser", fields: [createdById], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ticket_createdByUser")
+  // jiraId           String?
+}
+
+model User {
+  id              String   @id @default(uuid())
+  firstName       String
+  lastName        String
+  fullName        String
+  passwordHash    String
+  role            UserRole
+  assignedTickets Ticket[] @relation(name: "AssignedToUser")
+  // createdTickets  Ticket[] @relation(name: "CreatedByUser")
+}
+
+enum UserRole {
+  ADMIN
+  DEVELOPER
+  QA
+  MANAGER
+}
+
+enum TicketState {
+  NEW
+  IN_PROGRESS
+  REVIEW
+  DONE
+}
+
+enum TicketPriority {
+  CRITICAL
+  HIGH
+  MODERATE
+  LOW
+}
