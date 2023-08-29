@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Ticket {
-  id               Int      @id @default(autoincrement())
+  id               Int            @id @default(autoincrement())
   shortDescription String
   description      String?        @db.LongText
   state            TicketState    @default(NEW)
@@ -35,6 +35,13 @@ model User {
   // createdTickets  Ticket[] @relation(name: "CreatedByUser")
 }
 
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+}
+
 enum UserRole {
   ADMIN
   DEVELOPER
@@ -55,3 +62,5 @@ enum TicketPriority {
   MODERATE
   LOW
 }
+
+

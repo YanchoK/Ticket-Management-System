@@ -1,9 +1,25 @@
-import { Request, Response } from 'express';
+import express,{ Request, Response, NextFunction } from 'express';
 import { User } from "../interfaces/user_interface"
 import userService from '../services/user_service'
 import errorResponces from "../middlewares/error"
+import validator from '../middlewares/validator';
+
 
 const UserController = {
+    async signup(req: Request, res: Response, next: NextFunction) {
+        const { error, value } = validator.validateSignup(req.body);
+
+        if (error) {
+            console.log(error);
+            return res.send(error.details);
+        }
+
+        res.status(200).json({
+            message: "Successfully signed up!",
+            value: value
+        });
+    },
+
     async getAllUsers(req: Request, res: Response) {
         const page: number = parseInt(req.query.page as string) || 1; // The requested page number
         const limit: number = parseInt(req.query.limit as string) || 5; // Number of items per page
@@ -52,11 +68,11 @@ const UserController = {
         ) {
             res.status(400).json(errorResponces.invalidUserData);
         }
-        else if(await userService.getUserByEmail(email)){
+        else if (await userService.getUserByEmail(email)) {
             return res.status(409).json(errorResponces.userAlreadyExists);
-        } 
+        }
         else {
-            
+
             // let passwordHash: string = password.toString() // use middleware to encript the password
             try {
                 const newUser: User = {
