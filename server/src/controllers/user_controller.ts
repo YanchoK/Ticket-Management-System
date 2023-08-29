@@ -8,43 +8,6 @@ import errorCodes from '../utils/errorCodes';
 
 
 const UserController = {
-    
-    async test1(req: Request, res: Response, next: NextFunction) {
-        const { error, value } = validator.validateSignup(req.body);
-        
-        if (error) throw error;
-        
-        // if (error) {
-        //     console.log(error);
-        //     return res.send(error.details);
-        // }
-
-        res.status(200).json({
-            message: "Successfully signed up!",
-            value: value
-        });
-    },
-
-    async test2(req: Request, res: Response) {
-        // AppError
-        const subscription = undefined
-        if (!subscription) {
-            throw new AppError(errorCodes.INVALID_SUBSCRIPTION, "Subscription not found", 400);
-        }
-    },
-
-
-    async test3(req: Request, res: Response, next: NextFunction) {
-        // Unpredicted error
-        const user = undefined;
-        if (!user) {
-            throw new Error("User not found");
-        }
-
-        return res.status(200).json({ success: true });
-    },
-
-    
 
     async getAllUsers(req: Request, res: Response) {
         const page: number = parseInt(req.query.page as string) || 1; // The requested page number
@@ -83,13 +46,13 @@ const UserController = {
     },
 
     async createNewUser(req: Request, res: Response) {
-        const { firstName, lastName, email, passwordHash, role } = req.body;
+        const { firstName, lastName, email, password, role } = req.body;
 
         if (
             !firstName ||
             !lastName ||
             !email ||
-            !passwordHash ||
+            !password ||
             !role
         ) {
             res.status(400).json(errorResponces.invalidUserData);
@@ -98,15 +61,13 @@ const UserController = {
             return res.status(409).json(errorResponces.userAlreadyExists);
         }
         else {
-
-            // let passwordHash: string = password.toString() // use middleware to encript the password
             try {
                 const newUser: User = {
                     firstName: firstName,
                     lastName: lastName,
                     fullName: firstName + " " + lastName,
                     email: email,
-                    passwordHash: passwordHash,
+                    passwordHash: password,
                     role: role,
                 }
 
@@ -153,7 +114,44 @@ const UserController = {
             console.error("Error in deleteUser:", error);
             res.status(500).json(errorResponces.internalServerError);
         }
-    }
+    },
+
+
+
+
+    async test1(req: Request, res: Response, next: NextFunction) {
+        const { error, value } = validator.validateSignup(req.body);
+
+        if (error) throw error;
+
+        // if (error) {
+        //     console.log(error);
+        //     return res.send(error.details);
+        // }
+
+        res.status(200).json({
+            message: "Successfully signed up!",
+            value: value
+        });
+    },
+
+    async test2(req: Request, res: Response) {
+        // AppError
+        const subscription = undefined
+        if (!subscription) {
+            throw new AppError(errorCodes.INVALID_SUBSCRIPTION, "Subscription not found", 400);
+        }
+    },
+
+    async test3(req: Request, res: Response, next: NextFunction) {
+        // Unpredicted error
+        const user = undefined;
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        return res.status(200).json({ success: true });
+    },
 }
 
 export default UserController;

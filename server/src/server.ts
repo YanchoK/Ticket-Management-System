@@ -18,6 +18,7 @@ import cors from 'cors';
 import user_routes from './routes/user_routes';
 import auth_routes from './routes/auth_routes';
 import errorHandler from './middlewares/errorHandler';
+import  initializePassport  from './middlewares/initializePassport';
 
 const app = express();
 app.use(cors());
@@ -30,6 +31,9 @@ app.get("/api", (req: Request, res: Response): void => {
         res.send(error.message)
     }
 })
+
+initializePassport(app);
+
 // Routes
 app.use('/api/users', user_routes);
 app.use('/api/', auth_routes);

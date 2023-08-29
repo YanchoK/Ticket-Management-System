@@ -1,5 +1,5 @@
 import { User } from "../interfaces/user_interface"
-
+import bcrypt from "bcrypt";
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient();
 
@@ -67,9 +67,15 @@ const UserService = {
         // const { firstName, lastName,fullName, email, passwordHash, role } = newUser;
 
         try {
+            let { passwordHash, ...userWithoutPassword } = newUser;
+            passwordHash = await bcrypt.hash(passwordHash, 10);
+
+
             const createdUser = await prisma.user.create({
-                data: { ...newUser }
+                data: { ...userWithoutPassword, passwordHash: passwordHash }
             })
+
+            delete (createdUser as any).passwordHash;
             return createdUser;
         }
         catch (error: any) {

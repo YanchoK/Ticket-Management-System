@@ -8,6 +8,7 @@ const cors_1 = __importDefault(require("cors"));
 const user_routes_1 = __importDefault(require("./routes/user_routes"));
 const auth_routes_1 = __importDefault(require("./routes/auth_routes"));
 const errorHandler_1 = __importDefault(require("./middlewares/errorHandler"));
+const initializePassport_1 = __importDefault(require("./middlewares/initializePassport"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
@@ -19,6 +20,7 @@ app.get("/api", (req, res) => {
         res.send(error.message);
     }
 });
+(0, initializePassport_1.default)(app);
 app.use('/api/users', user_routes_1.default);
 app.use('/api/', auth_routes_1.default);
 app.use(errorHandler_1.default);
