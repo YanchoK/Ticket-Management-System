@@ -15,13 +15,13 @@ Server:
 
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import user_routes from './routes/user_routes';
 // import { PrismaClient } from '@prisma/client';
 
 const app = express();
 app.use(cors());
-// app.use(express.json())
+app.use(express.json())
 // const prisma = new PrismaClient()
-
 
 app.get("/api", (req: Request, res: Response): void => {
     try {
@@ -31,9 +31,8 @@ app.get("/api", (req: Request, res: Response): void => {
     }
 })
 
-
-// // Register routes
-// app.use('/api/v1/users', v1UserRouter);
+// Routes
+app.use('/api/users', user_routes);
 // app.use('/api/v1/tasks', v1TaskRouter);
 
 
