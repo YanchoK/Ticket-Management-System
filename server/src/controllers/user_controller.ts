@@ -1,24 +1,50 @@
-import express,{ Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { User } from "../interfaces/user_interface"
 import userService from '../services/user_service'
 import errorResponces from "../middlewares/error"
 import validator from '../middlewares/validator';
+import AppError from '../utils/AppError';
+import errorCodes from '../utils/errorCodes';
 
 
 const UserController = {
-    async signup(req: Request, res: Response, next: NextFunction) {
+    
+    async test1(req: Request, res: Response, next: NextFunction) {
         const { error, value } = validator.validateSignup(req.body);
-
-        if (error) {
-            console.log(error);
-            return res.send(error.details);
-        }
+        
+        if (error) throw error;
+        
+        // if (error) {
+        //     console.log(error);
+        //     return res.send(error.details);
+        // }
 
         res.status(200).json({
             message: "Successfully signed up!",
             value: value
         });
     },
+
+    async test2(req: Request, res: Response) {
+        // AppError
+        const subscription = undefined
+        if (!subscription) {
+            throw new AppError(errorCodes.INVALID_SUBSCRIPTION, "Subscription not found", 400);
+        }
+    },
+
+
+    async test3(req: Request, res: Response, next: NextFunction) {
+        // Unpredicted error
+        const user = undefined;
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        return res.status(200).json({ success: true });
+    },
+
+    
 
     async getAllUsers(req: Request, res: Response) {
         const page: number = parseInt(req.query.page as string) || 1; // The requested page number

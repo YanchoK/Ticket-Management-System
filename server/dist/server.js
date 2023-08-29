@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const user_routes_1 = __importDefault(require("./routes/user_routes"));
 const auth_routes_1 = __importDefault(require("./routes/auth_routes"));
+const errorHandler_1 = __importDefault(require("./middlewares/errorHandler"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
@@ -20,6 +21,7 @@ app.get("/api", (req, res) => {
 });
 app.use('/api/users', user_routes_1.default);
 app.use('/api/', auth_routes_1.default);
+app.use(errorHandler_1.default);
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is listenning on http://localhost:${PORT}/`);

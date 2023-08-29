@@ -33,9 +33,22 @@ app.get("/api", (req: Request, res: Response): void => {
 // Routes
 app.use('/api/users', user_routes);
 app.use('/api/', auth_routes);
-// app.use('/api/v1/tasks', v1TaskRouter);
+
+app.use(errorHandler);
 
 
+
+// app.get(
+//   "/test",
+//   tryCatch(async (req:Request, res:Response) => {
+//     const user = getUser();
+//     if (!user) {
+//       throw new Error("User not found");
+//     }
+
+//     return res.status(200).json({ success: true });
+//   })
+// );
 
 const PORT: Number = 3000
 app.listen(PORT, () => {
