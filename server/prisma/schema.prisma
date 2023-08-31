@@ -18,6 +18,9 @@ model Ticket {
   priority         TicketPriority
   assignedToId     Int?
   assignedTo       User?          @relation(name: "AssignedToUser", fields: [assignedToId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ticket_assignedToUser")
+  createdDate      DateTime       @default(now())
+  updatedDate      DateTime       @updatedAt
+
   // createdById      String
   // createdBy        User           @relation(name: "CreatedByUser", fields: [createdById], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ticket_createdByUser")
   // jiraId           String?
@@ -62,5 +65,3 @@ enum TicketPriority {
   MODERATE
   LOW
 }
-
-
