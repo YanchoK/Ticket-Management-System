@@ -1,21 +1,30 @@
 import { Response } from 'express';
 
 
-const error = {
+const errorResponces = {
     internalServerError: {
         message: "Internal server error",
     },
     userNotFound: {
         message: "User not found",
     },
+    ticketNotFound: {
+        message: "Ticket not found",
+    },
     invalidUserData: {
         message: "Invalid user data",
     },
-    createUserError: {
-        message: "Error while creating a new user",
+    invalidTicketData: {
+        message: "Invalid ticket data",
+    },
+    createTicketError: {
+        message: "Error while creating a new ticket",
     },
     updateUserError: {
         message: "Error while updating user",
+    },
+    updateTicketError: {
+        message: "Error while updating ticket",
     },
     deleteUserError: {
         message: "Error while deleting user",
@@ -31,4 +40,4 @@ const error = {
     }
 }
 
-export default error;
+export default errorResponces;

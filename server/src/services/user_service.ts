@@ -1,6 +1,7 @@
 import { User } from "../interfaces/user_interface"
-
+import bcrypt from "bcrypt";
 import { PrismaClient } from '@prisma/client'
+import errorResponces from "../middlewares/errorResponces"
 const prisma = new PrismaClient();
 
 const UserService = {
@@ -67,9 +68,15 @@ const UserService = {
         // const { firstName, lastName,fullName, email, passwordHash, role } = newUser;
 
         try {
+            let { passwordHash, ...userWithoutPassword } = newUser;
+            passwordHash = await bcrypt.hash(passwordHash, 10);
+
+
             const createdUser = await prisma.user.create({
-                data: { ...newUser }
+                data: { ...userWithoutPassword, passwordHash: passwordHash }
             })
+
+            delete (createdUser as any).passwordHash;
             return createdUser;
         }
         catch (error: any) {
@@ -82,7 +89,7 @@ const UserService = {
         try {
             const updatedUser = await prisma.user.update({
                 where: {
-                    id: userId,
+                  id:userId
                 },
                 data: {
                     ...changedUser
@@ -92,7 +99,7 @@ const UserService = {
             return updatedUser;
         } catch (error: any) {
             console.error("Error in updateUser:", error);
-            throw new Error("Error while updating user");
+            throw new Error(errorResponces.updateUserError.message);
         }
     },
 

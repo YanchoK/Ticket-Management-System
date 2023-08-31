@@ -16,12 +16,14 @@ Server:
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import user_routes from './routes/user_routes';
-// import { PrismaClient } from '@prisma/client';
+import auth_routes from './routes/auth_routes';
+import errorHandler from './middlewares/errorHandler';
+import  initializePassport  from './middlewares/initializePassport';
+import ticket_routes from './routes/ticket_routes';
 
 const app = express();
 app.use(cors());
 app.use(express.json())
-// const prisma = new PrismaClient()
 
 app.get("/api", (req: Request, res: Response): void => {
     try {
@@ -31,11 +33,28 @@ app.get("/api", (req: Request, res: Response): void => {
     }
 })
 
+initializePassport(app);
+
 // Routes
 app.use('/api/users', user_routes);
-// app.use('/api/v1/tasks', v1TaskRouter);
+app.use('/api/tickets', ticket_routes);
+app.use('/api/', auth_routes);
+
+app.use(errorHandler);
 
 
+
+// app.get(
+//   "/test",
+//   tryCatch(async (req:Request, res:Response) => {
+//     const user = getUser();
+//     if (!user) {
+//       throw new Error("User not found");
+//     }
+
+//     return res.status(200).json({ success: true });
+//   })
+// );
 
 const PORT: Number = 3000
 app.listen(PORT, () => {
