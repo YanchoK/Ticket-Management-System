@@ -19,6 +19,7 @@ import user_routes from './routes/user_routes';
 import auth_routes from './routes/auth_routes';
 import errorHandler from './middlewares/errorHandler';
 import  initializePassport  from './middlewares/initializePassport';
+import ticket_routes from './routes/ticket_routes';
 
 const app = express();
 app.use(cors());
@@ -36,6 +37,7 @@ initializePassport(app);
 
 // Routes
 app.use('/api/users', user_routes);
+app.use('/api/tickets', ticket_routes);
 app.use('/api/', auth_routes);
 
 app.use(errorHandler);

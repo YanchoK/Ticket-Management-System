@@ -7,4 +7,5 @@ router.get('/:id', userController.getUserById);
 router.post('/', userController.createNewUser)
 router.put('/:id', userController.updateUser);
 router.delete('/:id', userController.deleteUser);
-export default router;  
+export default router;
+

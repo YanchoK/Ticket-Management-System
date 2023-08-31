@@ -3,11 +3,10 @@ import { User } from "./user_interface"
 export interface Ticket {
     id?: number;
     shortDescription: string;
-    description: string | null;
+    description: string;
     state: TicketState;
     priority: TicketPriority;
-    assignedToId?: string | null;
-    assignedTo?: User | null;
+    assignedToId?: number;
   }
   
   export enum TicketState {
