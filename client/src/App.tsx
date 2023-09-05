@@ -1,57 +1,48 @@
-import { useState, useEffect } from 'react';
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-import './App.css'
+// import Details from './components/Details'
+import Details from './components/Details';
+import Footer from './components/Footer'
+import Navbar from './components/Navbar'
+import TicketsTable from './components/TicketsTable'
 
-function App() {
-
-  // const [data, setData] = useState<{ message: string } | null>(null);
-
-  // useEffect(() => {
-  //   fetch(`/api`)
-  //     .then((response) => response.json())
-  //     .then((responseData) => setData(responseData))
-  //     .catch((error) => console.error('Error fetching data:', error));
-  // }, []);
-
-  // return (
-  //   <div>
-  //     <h1>Data from Server</h1>
-  //     {data ? <p>{data.message}</p> : <p>Loading...</p>}
-  //   </div>
-  // );
-
-  //////////////////// Automatically update the info /////////////////////////////////////////////
-
-  const [data, setData] = useState<{ message: string } | null>(null);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch('/api');
-      const newData = await response.json();
-      setData(newData);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData(); // Fetch initial data
-    // const interval = setInterval(fetchData, 2000); // Fetch every 2 seconds
-
-    // return () => {
-    //   clearInterval(interval); // Clean up the interval on unmount
-    // };
-  }, []);
-
-  return (
-    <div>
-      <h1>Data from Server</h1>
-      {data ? <p>{data.message}</p> : <p>Loading...</p>}
-    </div>
-  );
+function classNames<T extends string | boolean>(...classes: T[]) {
+  return classes.filter(Boolean).join(' ')
 }
 
+const displayDetails = true;
+
+export default function App() {
+  return (
+    <div className="h-screen w-screen flex flex-col">
+      <Navbar />
+      {/* <header className="bg-white shadow">
+          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
+          </div>
+        </header> */}
+      <main className='flex-1 flex'>
+        <div className="flex-1 mx-auto max-w-7xl py-6 lg:px-2 overflow-hidden">
+          <TicketsTable />
+        </div>
+        <div className={classNames(displayDetails ? 'block' : 'hidden', 'mx-auto px-4 py-6 sm:px-6 lg:px-8 sm:border-l w-full md:max-w-md')} >
+          <Details />
+        </div>
+      </main>
+      <Footer />
+    </div>
+  )
+}
+/*mx-auto px-4 py-6 sm:px-6 lg:px-8 sm:border-l w-full lg:w-4/12
+
+ <div className="flex-1 w-screen flex">
+        <div className="bg-white flex-1">
+          <div className=''>
+            <TicketsTable />
+          </div>
+        </div>
+        <div className="bg-blue-500 w-1/3">
+          </div>
+          </div>
 
 
-export default App
+
+*/
