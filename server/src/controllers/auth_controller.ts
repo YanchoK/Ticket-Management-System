@@ -1,7 +1,7 @@
 
 import { Request, Response, NextFunction } from "express";
 import passport from "passport";
-import {User} from "../interfaces/user_interface"
+import { User } from "../interfaces/user_interface"
 
 const authController = {
     login: async (req: Request, res: Response, next: NextFunction) => {
@@ -12,6 +12,8 @@ const authController = {
             if (!user) {
                 return res.status(401).json({ message: "Invalid credentials" });
             }
+
+            // Auto log in the user
             req.login(user, (err) => {
                 if (err) {
                     return res.status(500).json({ message: err.message });
@@ -19,6 +21,7 @@ const authController = {
                 const { passwordHash, ...userWithoutPassword } = user;
                 return res.status(200).json(userWithoutPassword);
             });
+            
         })(req, res, next);
     },
 
@@ -38,6 +41,9 @@ const authController = {
         } else {
             res.status(404).json({ message: "User not found" });
         }
+    },
+    checkAuth: (req: Request, res: Response) => {
+        res.sendStatus(200);
     },
 };
 

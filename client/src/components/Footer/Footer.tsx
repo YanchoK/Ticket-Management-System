@@ -3,12 +3,12 @@
 
 export default function Footer() {
     return (
-        <footer className="px-3 py-8 text-gray-500 transition-colors duration-200 bg-clr_background dark:bg-gray-800 text-2 dark:text-gray-200">
+        <footer className="px-3 py-6 text-gray-500 transition-colors duration-200 bg-clr_background dark:bg-gray-800 text-2 dark:text-gray-200 lg:max-h-footerHeight w-screen">
             <div className="flex flex-col">
-                <div className="h-px mx-auto rounded-full md:hidden mt-7 w-11">
-                </div>
-                <div className="flex flex-col mt-4 md:mt-0 md:flex-row">
-                    <nav className="flex flex-col items-center justify-center flex-1 border-gray-100 md:items-end md:border-r md:pr-5">
+                {/* <div className="h-px mx-auto rounded-full sm:hidden mt-7 w-11">
+                </div> */}
+                <div className="flex flex-col sm:mt-0 sm:flex-row">
+                    <nav className="flex flex-col items-center justify-center flex-1 border-gray-100 sm:items-end sm:border-r sm:pr-5">
                         <a aria-current="page" href="#" className="text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                             Components
                         </a>
@@ -19,9 +19,9 @@ export default function Footer() {
                             Customization
                         </a>
                     </nav>
-                    <div className="h-px mx-auto mt-4 rounded-full md:hidden w-11">
-                    </div>
-                    <div className="flex items-center justify-center flex-1 mt-4 border-gray-100 md:mt-0 md:border-r">
+                    {/* <div className="h-px mx-auto mt-4 rounded-full sm:hidden w-11">
+                    </div> */}
+                    <div className="flex items-center justify-center flex-1 mt-5 border-gray-100 sm:mt-0 sm:border-r">
                         <a className="hover:text-primary-gray-20" href="https://github.com/Charlie85270/tail-kit">
                             <span className="sr-only">
                                 View on GitHub
@@ -41,13 +41,13 @@ export default function Footer() {
                             </svg>
                         </a>
                     </div>
-                    <div className="h-px mx-auto mt-4 rounded-full md:hidden w-11 ">
-                    </div>
-                    <div className="flex flex-col items-center justify-center flex-1 mt-7 md:mt-0 md:items-start md:pl-5">
+                    {/* <div className="h-px mx-auto mt-4 rounded-full sm:hidden w-11 ">
+                    </div> */}
+                    <div className="flex flex-col items-center justify-center flex-1 mt-2 sm:mt-0 sm:items-start sm:pl-5">
                         <span className="">
                             © 2021
                         </span>
-                        <span className="mt-7 md:mt-1">
+                        <span className="mt-2 sm:mt-1">
                             Created by
                             <a className="underline hover:text-primary-gray-20" href="https://www.linkedin.com/in/crabiller/">
                                 Yancho

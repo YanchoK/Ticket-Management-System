@@ -7,6 +7,8 @@ export interface Ticket {
     state: TicketState;
     priority: TicketPriority;
     assignedToId?: number;
+    createdDate?:Date;
+    updatedDate?:Date;
   }
   
   export enum TicketState {
