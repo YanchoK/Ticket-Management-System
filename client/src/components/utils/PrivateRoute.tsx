@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
-import { Navigate} from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import isAuthenticated from './isAuthenticated';
 
 interface PrivateRouteProps {
   children: React.ReactNode;
@@ -12,22 +13,25 @@ export default function PrivateRoute({ children }: PrivateRouteProps) {
 
   // use effect to fetch the token and update the state
   useEffect(() => {
-    fetch("api/checkAuth")
-      .then((res) => {
-        if (res.status === 200) {
-          // set auth status to true
-          // setIsAuthenticated(true);
-          setLoading(false);
-        } else {
-          // set auth status to false
-          // setIsAuthenticated(false);
-          setRedirect(true);
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    isAuthenticated().then((authStatus) => {
+      if (!authStatus) {
+        setRedirect(true);
+      }
+      setLoading(false);
+    });
+
+    // fetch("api/checkAuth")
+    //   .then((res) => {
+    //     if (res.status !== 200) {
+    //       // set auth status to true
+    //       // setIsAuthenticated(true);
+    //       setRedirect(true);
+    //     }
+    //     setLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
   }, []);
 
   if (loading) {

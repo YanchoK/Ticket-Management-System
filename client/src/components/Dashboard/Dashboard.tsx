@@ -12,7 +12,11 @@ function classNames<T extends string | boolean>(...classes: T[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Dashboard() {
+interface Props {
+  openCreateTicketForm: boolean
+}
+
+export default function Dashboard(props: Props) {
   const [selectedTicket, setTicket] = useState<Ticket>();
   const [displayDetails, setDisplayDetails] = useState(false)
   const [viewOnly, setViewOnly] = useState(true)
@@ -113,6 +117,12 @@ export default function Dashboard() {
   //         table.removeEventListener("scroll", handleScroll);
   //     };
   // }, []);
+
+  useEffect(() => {
+    if (props.openCreateTicketForm) {
+      handleOpenFormToCreateTicket()
+    }
+  }, [props.openCreateTicketForm])
 
   async function handleTicketDelete(ticketId: number) {
     try {
@@ -230,7 +240,7 @@ export default function Dashboard() {
         <div>{`There is a problem fetching the post data - ${error}`}</div>
       )}
 
-      <Navbar onCreateTicket={handleOpenFormToCreateTicket} />
+      {/* <Navbar onCreateTicket={handleOpenFormToCreateTicket} /> */}
 
       {/* min-h-screen */}
       <main className='flex-1 flex overflow-hidden'>
@@ -258,7 +268,7 @@ export default function Dashboard() {
           }
         </div>
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   )
 }

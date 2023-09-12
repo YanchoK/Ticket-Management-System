@@ -1,13 +1,10 @@
 import axios from "axios"
 import React, { ChangeEvent, useState } from 'react';
-import { useNavigate } from "react-router-dom";
-import Select from "../ContentDetails/Select";
 import FormatStatus from "../utils/FormatStatus";
 
 
 export default function Register() {
     const [formValues, setFormValues] = useState({ firstName: '', lastName: '', email: '', password: '', role: 'DEVELOPER' });
-    const navigate = useNavigate();
 
     const roleOptions = {
         DEVELOPER: 'DEVELOPER',
@@ -17,8 +14,10 @@ export default function Register() {
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        await axios.post("/api/register", formValues)
-        navigate("/dashboard");
+        const res=await axios.post("/api/register", formValues)
+        if (res.status === 201) {
+            window.location.href = '/dashboard'
+        }
     }
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -113,7 +112,7 @@ export default function Register() {
                         type="submit"
                         className="w-full px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150"
                     >
-                        Sign in
+                        Register
                     </button>
                 </form>
                 <button className="w-full flex items-center justify-center gap-x-3 py-2.5 border rounded-lg text-sm font-medium hover:bg-gray-50 duration-150 active:bg-gray-100">

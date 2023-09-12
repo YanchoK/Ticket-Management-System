@@ -1,15 +1,15 @@
 import axios from "axios"
 import React, { ChangeEvent, useState } from 'react';
-import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     const [formValues, setFormValues] = useState({ email: '', password: '' });
-    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        await axios.post("/api/login", formValues)
-        navigate("/dashboard");
+        const res = await axios.post("/api/login", formValues)
+        if (res.status === 200) {
+            window.location.href = '/dashboard'
+        }
     }
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +74,7 @@ export default function Login() {
                         type="submit"
                         className="w-full px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150"
                     >
-                        Sign in
+                        Log in
                     </button>
                 </form>
                 <button className="w-full flex items-center justify-center gap-x-3 py-2.5 border rounded-lg text-sm font-medium hover:bg-gray-50 duration-150 active:bg-gray-100">
@@ -96,8 +96,6 @@ export default function Login() {
                 <p className="text-center">Don't have an account? <a href="register" className="font-medium text-indigo-600 hover:text-indigo-500">Register</a></p>
             </div>
         </main>
-
-
     )
 }
 
