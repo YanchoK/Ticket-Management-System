@@ -151,7 +151,7 @@ const UserController = {
 
 
     async test1(req: Request, res: Response, next: NextFunction) {
-        const { error, value } = validator.validateSignup(req.body);
+        const { error, value } = validator.validateLogIn(req.body);
 
         if (error) throw error;
 

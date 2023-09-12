@@ -2,6 +2,7 @@ import { Ticket } from "../../../../server/src/interfaces/ticket_interface";
 import { useState, useEffect } from "react";
 import CloseIcon from "../icons/CloseIcon";
 import { User } from "../../../../server/src/interfaces/user_interface";
+import FormatStatus from "../utils/FormatStatus";
 
 interface Props {
   ticket: Ticket;
@@ -57,11 +58,11 @@ export default function Details(props: Props) {
               </div>
               <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">State</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{formValues.state}</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{FormatStatus(formValues.state)}</dd>
               </div>
               <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Priority</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{formValues.priority}</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{FormatStatus(formValues.priority)}</dd>
               </div>
               <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Assigned to</dt>

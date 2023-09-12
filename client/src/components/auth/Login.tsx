@@ -1,14 +1,20 @@
 import axios from "axios"
 import React, { ChangeEvent, useState } from 'react';
+import ErrorMessage from "./ErrorMessage";
 
 export default function Login() {
     const [formValues, setFormValues] = useState({ email: '', password: '' });
+    const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false)
 
     const handleSubmit = async (event) => {
-        event.preventDefault()
-        const res = await axios.post("/api/login", formValues)
-        if (res.status === 200) {
-            window.location.href = '/dashboard'
+        try {
+            event.preventDefault()
+            const res = await axios.post("/api/login", formValues)
+            if (res.status === 200) {
+                window.location.href = '/dashboard'
+            }
+        } catch (error) {
+            return setShowErrorMessage(true)
         }
     }
 
@@ -30,6 +36,9 @@ export default function Login() {
                     onSubmit={handleSubmit}
                     className="space-y-5"
                 >
+                    {showErrorMessage ? (<div>
+                        <ErrorMessage message="Incorrect username or password." onClose={() => setShowErrorMessage(false)} />
+                    </div>) : ''}
                     <div>
                         <label className="font-medium">
                             Email

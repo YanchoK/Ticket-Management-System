@@ -1,3 +1,4 @@
+import FormatStatus from "../utils/FormatStatus";
 
 export default function Status(params) {
     const statusType = params.statusType;
@@ -62,7 +63,7 @@ export default function Status(params) {
 
     return (
         <div className={classNames(bg, "inline-flex items-center px-3 py-1 rounded-full gap-x-2")}>
-            <h2 className={classNames(text, "text-sm font-medium")}>{statusValue}</h2>
+            <h2 className={classNames(text, "text-sm font-medium")}>{FormatStatus(statusValue)}</h2>
         </div>
     )
 }

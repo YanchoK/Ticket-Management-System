@@ -1,10 +1,15 @@
 import axios from "axios"
 import React, { ChangeEvent, useState } from 'react';
 import FormatStatus from "../utils/FormatStatus";
+import ErrorMessage from "./ErrorMessage";
 
 
 export default function Register() {
     const [formValues, setFormValues] = useState({ firstName: '', lastName: '', email: '', password: '', role: 'DEVELOPER' });
+    const [error, setError] = useState({ firstName: '', lastName: '', email: '', password: '' })
+    const [errorBannerMessage, setErrorBannerMessage] = useState('')
+    const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false)
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const roleOptions = {
         DEVELOPER: 'DEVELOPER',
@@ -13,10 +18,23 @@ export default function Register() {
     }
 
     const handleSubmit = async (event) => {
-        event.preventDefault()
-        const res=await axios.post("/api/register", formValues)
-        if (res.status === 201) {
-            window.location.href = '/dashboard'
+        try {
+            event.preventDefault()
+            const res = await axios.post("/api/register", formValues)
+            if (res.status === 201) {
+                window.location.href = '/dashboard'
+            }
+        } catch (error: any) {
+            console.log(error)
+            console.log(error.response.status)
+            if (error.response.status === 409) {
+                setErrorBannerMessage("User with this email already exists.")
+                setShowErrorMessage(true)
+            }
+            else if (error.response.status === 400) {
+                setErrorBannerMessage("Invalid data.")
+                setShowErrorMessage(true)
+            }
         }
     }
 
@@ -28,6 +46,21 @@ export default function Register() {
     const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
         setFormValues(prevValues => ({ ...prevValues, ['role']: e.target.value }));
     };
+
+    function handleInputUnfocus(event: ChangeEvent<HTMLInputElement>) {
+        const { name } = event.target;
+        if (formValues[name] === '') {
+            setError(prevValues => ({ ...prevValues, [name]: `Enter ${name}` }))
+        }
+
+        // else if (formValues.email) {
+
+        // }
+    }
+
+    function togglePasswordVisibility() {
+        setIsPasswordVisible((prevState) => !prevState);
+    }
 
     return (
         <main className="w-full py-10 h-screen flex flex-col items-center justify-center px-4">
@@ -41,8 +74,12 @@ export default function Register() {
                 </div>
                 <form
                     onSubmit={handleSubmit}
-                    className="space-y-5"
+                    className="space-y-5 group"
+                    noValidate
                 >
+                    {showErrorMessage ? (<div>
+                        <ErrorMessage message={errorBannerMessage} onClose={() => setShowErrorMessage(false)} />
+                    </div>) : ''}
                     <div>
                         <label className="font-medium">
                             First Name
@@ -53,8 +90,11 @@ export default function Register() {
                             onChange={handleChange}
                             type="text"
                             required
+                            placeholder='Enter first name'
                             className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                        // onBlur={handleInputUnfocus}
                         />
+                        {/* {<p>{error.firstName}</p>} */}
                     </div>
                     <div>
                         <label className="font-medium">
@@ -66,8 +106,11 @@ export default function Register() {
                             onChange={handleChange}
                             type="text"
                             required
+                            placeholder='Enter last name'
                             className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                        // onBlur={handleInputUnfocus}
                         />
+                        {/* {<p>{error.lastName}</p>} */}
                     </div>
                     <div>
                         <label className="font-medium">
@@ -80,30 +123,87 @@ export default function Register() {
                             type="email"
                             required
                             autoComplete="username"
-                            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                            className="invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500 w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg peer"
+                            onBlur={handleInputUnfocus}
+                            placeholder="Enter email"
+                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                         />
+                        <span className="mt-1 hidden text-sm text-red-400 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
+                            Please enter a valid email address
+                        </span>
+                        {<p>{error.email}</p>}
                     </div>
-                    <div>
+
+                    <div className="relative ">
                         <label className="font-medium">
                             Password
                         </label>
+                        {/* Eye */}
+                        <button className="absolute inset-y-11 right-0 px-3" onClick={togglePasswordVisibility} type="button">
+                                {isPasswordVisible ? (
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="w-5 h-5"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
+                                        />
+                                    </svg>
+                                ) : (
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="w-5 h-5"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                                        />
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                        />
+                                    </svg>
+                                )}
+                            </button>
                         <input
                             name="password"
                             value={formValues.password}
                             onChange={handleChange}
-                            type="password"
+                            type={isPasswordVisible ? "text" : "password"}
                             required
                             autoComplete="new-password"
-                            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                            minLength={6}
+                            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg [&:not(:placeholder-shown):not(:focus):invalid~span]:block invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-400"
+                            placeholder="Enter password"
+                            // onBlur={handleInputUnfocus}
                         />
+                        <span className="mt-1 hidden text-sm text-red-400">
+                            Password must be at least 6 characters.{' '}
+                        </span>
+                        {<p>{error.password}</p>}
                     </div>
                     <div>
+                        <label className="font-medium">
+                            Role
+                        </label>
                         <select
-                        value={formValues.role} onChange={handleSelectChange}
-                         className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg hover:outline-none hover:">
-                        {[...Object.values(roleOptions)].map((option:string)=>(
-                            <option  key={option} value={option}>{FormatStatus(option)}</option>
-                        ))}
+                            value={formValues.role} onChange={handleSelectChange}
+                            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg hover:outline-none hover:">
+                            {[...Object.values(roleOptions)].map((option: string) => (
+                                <option key={option} value={option}>{FormatStatus(option)}</option>
+                            ))}
                         </select>
                     </div>
 
