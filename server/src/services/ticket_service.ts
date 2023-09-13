@@ -6,33 +6,79 @@ const prisma = new PrismaClient();
 
 const TicketService = {
 
-    async getAllTickets(): Promise<Ticket[]> {
+    async getAllTickets(sortBy?: string, page?: number, limit?: number): Promise<Ticket[]> {
         try {
-            return await prisma.ticket.findMany() as Ticket[]
-        } catch (error) {
-            console.error("Error in getAllTicketsInRange:", error);
-            throw new Error("Error while getting tickets");
-        }
-    },
+            let conditions = {}
 
-    async getAllTicketsInRange(page: number, limit: number) {
-        try {
-            const allTicketsInRange = await prisma.ticket.findMany({
-                skip: (page - 1) * limit,
-                take: limit,
-            });
-
-            if (allTicketsInRange.length === 0) {
-                const ticketsCount = await prisma.ticket.count()
-                throw { status: 500, message: `Number of elements exieded! Elements count: ${ticketsCount}.` };
+            if (sortBy && page && limit) {
+                conditions = {
+                    orderBy: [
+                        {
+                            [sortBy]: 'asc',
+                        },
+                    ],
+                    skip: (page - 1) * limit,
+                    take: limit,
+                    include: {
+                        fullName: true
+                    }
+                }
+            }
+            else if (sortBy) {
+                conditions = {
+                    orderBy: [
+                        {
+                            [sortBy]: 'asc',
+                        },
+                    ],
+                    include:{
+                        assignedTo:true
+                    }
+                }
+            }
+            else if (page && limit) {
+                conditions = {
+                    skip: (page - 1) * limit,
+                    take: limit,
+                    include:{
+                        assignedTo:true
+                    }
+                }
+            }
+            else {
+                conditions = {
+                    include:{
+                        assignedTo:true
+                    }
+                }
             }
 
-            return allTicketsInRange as Ticket[];
+            return await prisma.ticket.findMany(conditions) as Ticket[]
+
         } catch (error) {
             console.error("Error in getAllTicketsInRange:", error);
             throw new Error("Error while getting tickets");
         }
     },
+
+    // async getAllTicketsInRange(page: number, limit: number) {
+    //     try {
+    //         const allTicketsInRange = await prisma.ticket.findMany({
+    //             skip: (page - 1) * limit,
+    //             take: limit,
+    //         });
+
+    //         if (allTicketsInRange.length === 0) {
+    //             const ticketsCount = await prisma.ticket.count()
+    //             throw { status: 500, message: `Number of elements exieded! Elements count: ${ticketsCount}.` };
+    //         }
+
+    //         return allTicketsInRange as Ticket[];
+    //     } catch (error) {
+    //         console.error("Error in getAllTicketsInRange:", error);
+    //         throw new Error("Error while getting tickets");
+    //     }
+    // },
 
     async getTicketById(ticketId: number) {
         try {
@@ -51,8 +97,9 @@ const TicketService = {
 
     async createNewTicket(newTicket: Ticket) {
         try {
+            const {assignedTo,...data}=newTicket
             const createdTicket = await prisma.ticket.create({
-                data: { ...newTicket }
+                data: { ...data }
             })
 
             return createdTicket;
@@ -65,12 +112,13 @@ const TicketService = {
 
     async updateTicket(ticketId: number, changedTicket: Ticket) {
         try {
+            const {assignedTo,...data}=changedTicket
             const updatedTicket = await prisma.ticket.update({
                 where: {
                     id: ticketId
                 },
                 data: {
-                    ...changedTicket
+                    ...data
                 },
             });
 

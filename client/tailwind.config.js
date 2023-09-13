@@ -16,7 +16,7 @@ export default {
         // "navbarHeight":"7%",
         "footerHeight":"18%",
         // "mainPageHeight":"55%",
-        "5elementsT":"22.4rem"
+        "5elementsT":"33.5rem"
         // "5elementsT":"25.8125rem"
       }
     },

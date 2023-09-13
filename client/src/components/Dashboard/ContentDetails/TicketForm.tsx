@@ -117,7 +117,7 @@ export default function TicketForm(props: Props) {
                         </button>
                     </div>
                     <div className="mt-3 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
-                        <div className="sm:col-span-4">
+                        <div className="sm:col-span-full">
                             <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
                                 Short descriptuion  <span className="text-red-500 required-dot">*</span>
                             </label>
@@ -156,7 +156,7 @@ export default function TicketForm(props: Props) {
                             </div>
                         </div>
 
-                        <div className="sm:col-span-4">
+                        <div className="sm:col-span-full">
                             <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
                                 Assigned to
                             </label>
@@ -165,7 +165,7 @@ export default function TicketForm(props: Props) {
                             </div>
                         </div>
 
-                        <div className="sm:col-span-4">
+                        <div className="sm:col-span-full">
                             <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
                                 State
                             </label>
@@ -174,7 +174,7 @@ export default function TicketForm(props: Props) {
                             </div>
                         </div>
 
-                        <div className="sm:col-span-4">
+                        <div className="sm:col-span-full">
                             <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
                                 Priority
                             </label>

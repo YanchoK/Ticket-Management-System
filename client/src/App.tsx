@@ -1,3 +1,4 @@
+import './App.css'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from "./components/Dashboard/Dashboard";
 import Homepage from "./components/Homepage/Homepage";
@@ -17,11 +18,11 @@ export default function App() {
   function createTicket() {
     setShouldOpenCreateTicketForm(true)
   }
-  function closeDetails(){
+  function closeDetails() {
     setShouldOpenCreateTicketForm(false)
   }
 
-    useEffect(() => {
+  useEffect(() => {
     isAuthenticated().then((authStatus) => {
       if (authStatus) {
         // User is authenticated

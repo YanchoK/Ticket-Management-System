@@ -35,8 +35,8 @@ export default function Dashboard(props: Props) {
     assignedToId: null
   };
 
-  function getTickets() {
-    fetch(`/api/tickets/`)
+  function getTickets(sortBy?: string, page?: number, limit?: number) {
+    fetch(`/api/tickets/?sortBy=${sortBy}&${page}&${limit}`)
       // Convert the response to JSON format
       .then((response) => {
         if (response.ok) {
@@ -65,7 +65,7 @@ export default function Dashboard(props: Props) {
   // Use the useEffect hook to fetch data when the component mounts and when the page changes
   useEffect(() => {
     // Use the fetch() function to send a GET request to the API endpoint
-    fetch(`/api/tickets/`)
+    fetch(`/api/tickets/?sortBy=${''}&page=${''}&limit=${''}`)
       // Convert the response to JSON format
       .then((response) => {
         if (response.ok) {
@@ -169,7 +169,7 @@ export default function Dashboard(props: Props) {
 
   async function handleUpdateTicket(ticket: Ticket) {
     try {
-      const { id, createdDate, updatedDate, ...data } = ticket
+      const { id, createdDate, updatedDate,assignedTo, ...data } = ticket
 
       const requestOptions = {
         method: 'PUT',
@@ -194,7 +194,7 @@ export default function Dashboard(props: Props) {
 
   async function handleCreateTicket(ticket: Ticket) {
     try {
-      const { id, createdDate, updatedDate, ...data } = ticket
+      const { id, createdDate, updatedDate,assignedTo, ...data } = ticket
 
       const requestOptions = {
         method: 'POST',
@@ -248,14 +248,16 @@ export default function Dashboard(props: Props) {
 
       {/* min-h-screen */}
       <main className='flex-1 flex overflow-hidden'>
-        <div className="flex-1 mx-auto max-w-7xl py-6 lg:px-2 overflow-hidden">
+        <div className="flex-1 my-auto mx-auto max-w-full py-6 lg:px-4 overflow-hidden">
           <TicketsTable
+          getUser={getUser}
+          onSort={getTickets}
             tickets={tickets}
             onEdit={handleOpenFormToUpdateTicket}
             handleTicketDelete={handleTicketDelete}
             onSelectedTicket={handleTicketSelection} />
         </div>
-        <div className={classNames(displayDetails ? 'block' : 'hidden', 'mx-auto px-4 py-6 sm:px-6 lg:px-6 sm:border-l w-full md:max-w-lg overflow-y-scroll')} >
+        <div className={classNames(displayDetails ? 'block' : 'hidden', 'mx-auto px-4 py-6 sm:px-6 lg:px-6 sm:border-l w-full md:max-w-md overflow-y-scroll')} >
           {viewOnly ?
             <Details detailsType='list'
               ticket={selectedTicket}

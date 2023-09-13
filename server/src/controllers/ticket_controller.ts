@@ -7,24 +7,19 @@ import validator from '../middlewares/validator';
 const TicketController = {
 
     async getAllTickets(req: Request, res: Response) {
-        const page: number = parseInt(req.query.page as string) || 1; // The requested page number
-        const limit: number = parseInt(req.query.limit as string) || 5; // Number of items per page
-
         try {
-            let allTickets: Ticket[];
-            if (!req.query.page && !req.query.limit) {
-                allTickets = await ticketService.getAllTickets();
-                res.status(200).send({ count: allTickets.length, tickets: allTickets });
+            const page: number = parseInt(req.query.page as string); // The requested page number
+            const limit: number = parseInt(req.query.limit as string); // Number of items per page
+            let sortBy: string | undefined = req.query.sortBy as string
+
+            const keys = ["shortDescription", "description", "state", "priority", "assignedToId", "createdDate,", "updatedDate"]
+            if (sortBy && !keys.includes(sortBy)) {
+                sortBy = undefined
             }
-            else {
-                try {
-                    allTickets = await ticketService.getAllTicketsInRange(page, limit);
-                    res.status(200).send({ count: allTickets.length, tickets: allTickets });
-                } catch (error) {
-                    console.log(error)
-                    res.status(200).json({ tickets: [], message: "No more items to fetch" });
-                }
-            }
+
+            const allTickets: Ticket[] = await ticketService.getAllTickets(sortBy, page, limit);
+
+            res.status(200).send({ count: allTickets.length, tickets: allTickets });
         } catch (error) {
             console.error("Error in getAllTickets:", error);
             res.status(500).json(errorResponces.internalServerError);

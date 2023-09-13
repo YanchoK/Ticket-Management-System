@@ -9,6 +9,7 @@ export interface Ticket {
     assignedToId?: number;
     createdDate?:Date;
     updatedDate?:Date;
+    assignedTo?:User|undefined
   }
   
   export enum TicketState {
