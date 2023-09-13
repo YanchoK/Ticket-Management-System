@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { User } from "../../../../server/src/interfaces/user_interface";
+import { User } from "../../../../../server/src/interfaces/user_interface";
 
 interface Props {
     handleSelectUser: (user: User) => void;
@@ -101,7 +101,8 @@ export default function SelectUser(props: Props) {
                         type="button"
                         onClick={() => {
                             setSearchFieldVal("");
-                            setSelectedItem(null);
+                            setSelectedItem({id:null} as User);
+                            handleSelectChange({id:null} as User);
                             setMenuOpen(false);
                         }}
                     >

@@ -2,9 +2,10 @@
 import { ChangeEvent, useEffect, useState } from "react"
 import SelectUser from "./SelectUser"
 import Select from "./Select"
-import CloseIcon from "../icons/CloseIcon"
-import { Ticket } from "../../../../server/src/interfaces/ticket_interface"
-import { User } from "../../../../server/src/interfaces/user_interface"
+import CloseIcon from "../../icons/CloseIcon"
+import { Ticket } from "../../../../../server/src/interfaces/ticket_interface"
+import { User } from "../../../../../server/src/interfaces/user_interface"
+import ErrorMessage from "../../ErrorMessage/ErrorMessage"
 
 interface Props {
     // ticket: Ticket,
@@ -43,6 +44,7 @@ export default function TicketForm(props: Props) {
 
     const [formValues, setFormValues] = useState<Ticket>(emptyTicket);
     const [users, setUsers] = useState<User[] | null>(null);
+    const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false)
 
     useEffect(() => {
         console.log("useEffect in ContentDetails");
@@ -80,11 +82,16 @@ export default function TicketForm(props: Props) {
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-
-        if (formValues.id !== -1) {
-            await props.onUpdate(formValues);
-        } else {
-            await props.onSave(formValues);
+        if (formValues.shortDescription && formValues.description) {
+            if (formValues.id !== -1) {
+                await props.onUpdate(formValues);
+            } else {
+                await props.onSave(formValues);
+            }
+        }
+        else{
+            setShowErrorMessage(true)
+            setTimeout(()=>setShowErrorMessage(false), 3000)
         }
     }
 
@@ -97,6 +104,10 @@ export default function TicketForm(props: Props) {
         <form onSubmit={handleSubmit}>
             <div className="space-y-12">
                 <div className="border-b border-gray-900/10 pb-12">
+                {showErrorMessage ? (
+                <div className="mb-5">
+                        <ErrorMessage message="Short description and description are required." onClose={() => setShowErrorMessage(false)} />
+                    </div>) : ''}
                     <div className="flex flex-row justify-between">
                         <h2 className="text-base font-semibold leading-7 text-gray-900">Ticket</h2>
                         <button
@@ -108,7 +119,7 @@ export default function TicketForm(props: Props) {
                     <div className="mt-3 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
                         <div className="sm:col-span-4">
                             <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
-                                Short descriptuion
+                                Short descriptuion  <span className="text-red-500 required-dot">*</span>
                             </label>
                             <div className="mt-2">
                                 <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
@@ -116,24 +127,29 @@ export default function TicketForm(props: Props) {
                                         type="text"
                                         name="shortDescription"
                                         id="shortDescription"
+                                        placeholder="Write short description"
                                         className="block flex-1 border-0 bg-transparent py-1.5 px-3 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                                         value={formValues.shortDescription}
                                         onChange={handleInputChange}
                                     />
                                 </div>
+                                {/* <span className="mt-1 text-sm text-red-400 hidden">
+                                        Please enter short description
+                                    </span> */}
                             </div>
                         </div>
 
                         <div className="col-span-full">
                             <label htmlFor="about" className="block text-sm font-medium leading-6 text-gray-900">
-                                Description
+                                Description  <span className="text-red-500 required-dot">*</span>
                             </label>
                             <div className="mt-2">
                                 <textarea
                                     id="description"
                                     name="description"
+                                    placeholder="Write description"
                                     rows={3}
-                                    className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 "
                                     value={formValues.description}
                                     onChange={handleInputChange}
                                 />
@@ -178,8 +194,8 @@ export default function TicketForm(props: Props) {
                     {formValues.id < 0 ? "Submit" : "Update"}
                 </button>
                 <button type="button"
-                onClick={props.closeDetails}
-                 className="text-sm font-semibold leading-6 text-gray-900">
+                    onClick={props.closeDetails}
+                    className="text-sm font-semibold leading-6 text-gray-900">
                     Cancel
                 </button>
             </div>

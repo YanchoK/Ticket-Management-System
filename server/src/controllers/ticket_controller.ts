@@ -14,11 +14,17 @@ const TicketController = {
             let allTickets: Ticket[];
             if (!req.query.page && !req.query.limit) {
                 allTickets = await ticketService.getAllTickets();
+                res.status(200).send({ count: allTickets.length, tickets: allTickets });
             }
             else {
-                allTickets = await ticketService.getAllTicketsInRange(page, limit);
+                try {
+                    allTickets = await ticketService.getAllTicketsInRange(page, limit);
+                    res.status(200).send({ count: allTickets.length, tickets: allTickets });
+                } catch (error) {
+                    console.log(error)
+                    res.status(200).json({ tickets: [], message: "No more items to fetch" });
+                }
             }
-            res.status(200).send({ count: allTickets.length, tickets: allTickets });
         } catch (error) {
             console.error("Error in getAllTickets:", error);
             res.status(500).json(errorResponces.internalServerError);
@@ -62,7 +68,7 @@ const TicketController = {
         // }
         else {
             try {
-                const newTicket: Ticket =value
+                const newTicket: Ticket = value
                 const createdTicket = await ticketService.createNewTicket(newTicket)
                 res.status(201).json({ message: "Ticket is created", data: createdTicket });
             }
@@ -83,7 +89,7 @@ const TicketController = {
         }
 
         validation = validator.validateId(req.params)
-        let {id} = validation.value
+        let { id } = validation.value
 
         if (validation.error) {
             console.log(validation.error);

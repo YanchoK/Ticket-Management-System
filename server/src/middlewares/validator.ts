@@ -33,10 +33,10 @@ const schemas = {
     }),
     ticketSchema: Joi.object({
         shortDescription: Joi.string().max(50),
-        description: Joi.string().optional(),
-        state: Joi.string().valid(...Object.values(TicketState)),
-        priority: Joi.string().valid(...Object.values(TicketPriority)),
-        assignedToId: Joi.number()
+        description: Joi.string(),
+        state: Joi.string().valid(...Object.values(TicketState)).optional(),
+        priority: Joi.string().valid(...Object.values(TicketPriority)).optional(),
+        assignedToId: Joi.number().optional().allow(null)
     }),
 }
 

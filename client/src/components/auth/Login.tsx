@@ -1,6 +1,6 @@
 import axios from "axios"
 import React, { ChangeEvent, useState } from 'react';
-import ErrorMessage from "./ErrorMessage";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
 export default function Login() {
     const [formValues, setFormValues] = useState({ email: '', password: '' });

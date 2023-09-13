@@ -1,7 +1,7 @@
 import axios from "axios"
 import React, { ChangeEvent, useState } from 'react';
 import FormatStatus from "../utils/FormatStatus";
-import ErrorMessage from "./ErrorMessage";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
 
 export default function Register() {

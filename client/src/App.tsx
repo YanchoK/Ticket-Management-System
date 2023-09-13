@@ -3,9 +3,9 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import Homepage from "./components/Homepage/Homepage";
 import Navbar from './components/Navbar/Navbar';
 import PrivateRoute from './components/utils/PrivateRoute';
-import Login from './components/auth/Login';
+import Login from './components/Auth/Login';
 import Footer from './components/Footer/Footer';
-import Register from './components/auth/Register';
+import Register from './components/Auth/Register';
 import isAuthenticated from './components/utils/isAuthenticated';
 import { useEffect, useState } from 'react';
 import PageNotFound from './components/PageNotFound/PageNotFound';
@@ -16,6 +16,9 @@ export default function App() {
 
   function createTicket() {
     setShouldOpenCreateTicketForm(true)
+  }
+  function closeDetails(){
+    setShouldOpenCreateTicketForm(false)
   }
 
     useEffect(() => {
@@ -39,7 +42,7 @@ export default function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<PrivateRoute><Dashboard openCreateTicketForm={shouldOpenCreateTicketForm} /></PrivateRoute>} />
+          <Route path="/dashboard" element={<PrivateRoute><Dashboard onCloseDetails={closeDetails} openCreateTicketForm={shouldOpenCreateTicketForm} /></PrivateRoute>} />
           <Route path='*' element={<PageNotFound />} />
         </Routes>
         <Footer />

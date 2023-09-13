@@ -1,4 +1,4 @@
-import FormatStatus from "../utils/FormatStatus";
+import FormatStatus from "../../utils/FormatStatus";
 
 export default function Status(params) {
     const statusType = params.statusType;

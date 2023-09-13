@@ -1,9 +1,9 @@
 // import Details from './components/Details'
-import Details from '../ContentDetails/Details';
+import Details from './ContentDetails/TicketDetails';
 import Footer from '../Footer/Footer'
 import Navbar from '../Navbar/Navbar'
-import TicketsTable from '../MainContent/TicketsTable'
-import TicketForm from '../ContentDetails/TicketForm'
+import TicketsTable from './MainContent/TicketsTable'
+import TicketForm from './ContentDetails/TicketForm'
 import { Ticket, TicketPriority, TicketState } from "../../../../server/src/interfaces/ticket_interface"
 import { useState, useEffect } from "react";
 import { User } from '../../../../server/src/interfaces/user_interface';
@@ -14,6 +14,7 @@ function classNames<T extends string | boolean>(...classes: T[]) {
 
 interface Props {
   openCreateTicketForm: boolean
+  onCloseDetails: () => void
 }
 
 export default function Dashboard(props: Props) {
@@ -119,7 +120,7 @@ export default function Dashboard(props: Props) {
   // }, []);
 
   useEffect(() => {
-    if (props.openCreateTicketForm) {
+    if (props.openCreateTicketForm===true) {
       handleOpenFormToCreateTicket()
     }
   }, [props.openCreateTicketForm])
@@ -133,8 +134,10 @@ export default function Dashboard(props: Props) {
         const updatedTickets = tickets.filter((ticket) => ticket.id !== ticketId);
         setTickets(updatedTickets)
         console.log(`Ticket with id ${ticketId} deleted successfully`);
+        return "success"
       } else {
         console.log(`Failed to delete ticket with id ${ticketId}`);
+        return "error"
       }
     } catch (error) {
       console.error(error);
@@ -160,6 +163,7 @@ export default function Dashboard(props: Props) {
   }
 
   function handleCloseDetails() {
+    props.onCloseDetails()
     setDisplayDetails(false)
   }
 
