@@ -14,7 +14,9 @@ export default function Login() {
                 window.location.href = '/dashboard'
             }
         } catch (error) {
-            return setShowErrorMessage(true)
+            setShowErrorMessage(true)
+            setTimeout(() => setShowErrorMessage(false), 3000)
+            return
         }
     }
 

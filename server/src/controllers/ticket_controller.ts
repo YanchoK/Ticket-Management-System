@@ -11,13 +11,17 @@ const TicketController = {
             const page: number = parseInt(req.query.page as string); // The requested page number
             const limit: number = parseInt(req.query.limit as string); // Number of items per page
             let sortBy: string | undefined = req.query.sortBy as string
+            let orderBy: string | undefined = req.query.orderBy as string
 
             const keys = ["shortDescription", "description", "state", "priority", "assignedToId", "createdDate,", "updatedDate"]
             if (sortBy && !keys.includes(sortBy)) {
                 sortBy = undefined
             }
+            if (orderBy !== "asc" && orderBy !== "desc") {
+                orderBy = "asc"
+            }
 
-            const allTickets: Ticket[] = await ticketService.getAllTickets(sortBy, page, limit);
+            const allTickets: Ticket[] = await ticketService.getAllTickets(sortBy,orderBy, page, limit);
 
             res.status(200).send({ count: allTickets.length, tickets: allTickets });
         } catch (error) {

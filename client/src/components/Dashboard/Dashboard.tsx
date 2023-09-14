@@ -22,9 +22,14 @@ export default function Dashboard(props: Props) {
   const [displayDetails, setDisplayDetails] = useState(false)
   const [viewOnly, setViewOnly] = useState(true)
 
-  const [tickets, setTickets] = useState<Ticket[]>(null);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [page, setPage] = useState(1)
+
+  const [filter,setFilter]=useState<string>(undefined)
+  const [order,setOrder]=useState<"asc"|"desc">("asc")
 
   const emptyTicket: Ticket = {
     id: -1,
@@ -35,9 +40,8 @@ export default function Dashboard(props: Props) {
     assignedToId: null
   };
 
-  function getTickets(sortBy?: string, page?: number, limit?: number) {
-    fetch(`/api/tickets/?sortBy=${sortBy}&${page}&${limit}`)
-      // Convert the response to JSON format
+  function getTickets() {
+    fetch(`/api/tickets/?sortBy=${filter}&orderBy=${order}&page=${page}&limit=${5}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -45,104 +49,48 @@ export default function Dashboard(props: Props) {
           throw response;
         }
       })
-      // Update the data state with the fetched data
-      .then((data) => {
-        setTickets(data.tickets)
-      })
-      // Handle any error that may occur
-      .catch((error) => {
+      .then(data => {
+        setTickets([...tickets, ...data.tickets])
+        let newPage = page;
+        newPage++;
+        setPage((newPage))
+      }).catch((error) => {
         setError(error);
       })
-      // Set the loading state to false when the promise is resolved
       .finally(() => {
         setLoading(false);
       });
   }
 
-  // const [page, setPage] = useState(1);
-  // const [items, setItems] = useState([]);
-  // const [hasMore, setHasMore] = useState(true);
-  // Use the useEffect hook to fetch data when the component mounts and when the page changes
   useEffect(() => {
-    // Use the fetch() function to send a GET request to the API endpoint
-    fetch(`/api/tickets/?sortBy=${''}&page=${''}&limit=${''}`)
-      // Convert the response to JSON format
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw response;
-        }
-      })
-      // Update the data state with the fetched data
-      .then((newData) => {
-        setTickets(newData.tickets)
-        // setData((prevData) => {
+    if (tickets.length === 0) {
+      getTickets()
+    }
 
-        //     if (prevData) {
-        //         console.log("if "+page)
-        //         return {
-        //             count: newData.count,
-        //             tickets: [...prevData.tickets, ...newData.tickets],
-        //         };
-        //     } 
-        //     else {
-        //         console.log("else "+page)
-        //         return newData;
-        //     }
-        // });
-      })
-      // Handle any error that may occur
-      .catch((error) => {
-        setError(error);
-      })
-      // Set the loading state to false when the promise is resolved
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [])//, [page]); // Provide the page state as a dependency
+    const div = document.querySelector(".table-container");
+    if (div.scrollHeight === div.clientHeight && !loading) {
+      getTickets()
+    }
 
-  // Add a scroll event listener to the table to detect when the user scrolls to the bottom
-  // useEffect(() => {
-  //     const table = document.querySelector(".table-container");
-  //     console.log("useEffScrl "+page)
+  }, [page])
 
-  //     const handleScroll = () => {
-  //         if (table.scrollTop + table.clientHeight >= table.scrollHeight) {
-  //             console.log("iff useEffScrl "+page)
-  //             setPage((prevPage) => prevPage + 1);
-  //         }
-  //     };
-  //     table.addEventListener("scroll", handleScroll);
-  //     return () => {
-  //         table.removeEventListener("scroll", handleScroll);
-  //     };
-  // }, []);
+  const infiniteScroll = (event) => {
+    const div = event.target as HTMLDivElement
+    // End of the document reached?
+    if (div.scrollTop + div.clientHeight + 50 >= div.scrollHeight) {
+      getTickets()
+    }
+
+    // console.log(div.scrollHeight)
+    // console.log(div.clientHeight)
+    // console.log(div.scrollTop)
+  }
 
   useEffect(() => {
-    if (props.openCreateTicketForm===true) {
+    if (props.openCreateTicketForm === true) {
       handleOpenFormToCreateTicket()
     }
   }, [props.openCreateTicketForm])
-
-  async function handleTicketDelete(ticketId: number) {
-    try {
-      const response = await fetch(`/api/tickets/${ticketId}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        const updatedTickets = tickets.filter((ticket) => ticket.id !== ticketId);
-        setTickets(updatedTickets)
-        console.log(`Ticket with id ${ticketId} deleted successfully`);
-        return "success"
-      } else {
-        console.log(`Failed to delete ticket with id ${ticketId}`);
-        return "error"
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   function handleTicketSelection(ticket: Ticket) {
     setTicket(ticket)
@@ -167,9 +115,24 @@ export default function Dashboard(props: Props) {
     setDisplayDetails(false)
   }
 
+  function reloadTickets(sortBy?: string) {
+    setTickets([])
+    setPage(1)
+
+    if (sortBy && sortBy===filter) {
+      setOrder(order==="desc"?"asc":"desc")
+    }
+    else{
+      setOrder("asc")
+    }
+
+    setFilter(sortBy)
+    getTickets()
+  }
+
   async function handleUpdateTicket(ticket: Ticket) {
     try {
-      const { id, createdDate, updatedDate,assignedTo, ...data } = ticket
+      const { id, createdDate, updatedDate, assignedTo, ...data } = ticket
 
       const requestOptions = {
         method: 'PUT',
@@ -181,7 +144,7 @@ export default function Dashboard(props: Props) {
       const responceData = await response.json()
 
       if (response.ok) {
-        getTickets()
+        reloadTickets()
         handleCloseDetails()
         console.log(`Ticket with id ${responceData["data"].id} updated successfully`);
       } else {
@@ -194,7 +157,7 @@ export default function Dashboard(props: Props) {
 
   async function handleCreateTicket(ticket: Ticket) {
     try {
-      const { id, createdDate, updatedDate,assignedTo, ...data } = ticket
+      const { id, createdDate, updatedDate, assignedTo, ...data } = ticket
 
       const requestOptions = {
         method: 'POST',
@@ -207,10 +170,29 @@ export default function Dashboard(props: Props) {
 
       if (response.ok) {
         handleCloseDetails()
-        getTickets()
+        reloadTickets()
         console.log(`Ticket with id ${responceData["data"].id} created successfully`);
       } else {
         console.log(`Failed to created ticket with id ${responceData["data"].id}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function handleTicketDelete(ticketId: number) {
+    try {
+      const response = await fetch(`/api/tickets/${ticketId}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        const updatedTickets = tickets.filter((ticket) => ticket.id !== ticketId);
+        setTickets(updatedTickets)
+        console.log(`Ticket with id ${ticketId} deleted successfully`);
+        return "success"
+      } else {
+        console.log(`Failed to delete ticket with id ${ticketId}`);
+        return "error"
       }
     } catch (error) {
       console.error(error);
@@ -250,8 +232,9 @@ export default function Dashboard(props: Props) {
       <main className='flex-1 flex overflow-hidden'>
         <div className="flex-1 my-auto mx-auto max-w-full py-6 lg:px-4 overflow-hidden">
           <TicketsTable
-          getUser={getUser}
-          onSort={getTickets}
+            onScroll={infiniteScroll}
+            getUser={getUser}
+            onSort={reloadTickets}
             tickets={tickets}
             onEdit={handleOpenFormToUpdateTicket}
             handleTicketDelete={handleTicketDelete}

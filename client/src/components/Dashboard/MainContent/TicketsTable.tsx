@@ -175,13 +175,8 @@ interface Props {
   onEdit: (ticket: Ticket) => void,
   onSort: (sortBy: string) => void,
   getUser: (id: number) => Promise<User>
+  onScroll: (event) => void
 }
-
-// const orderOptions={
-//   "assignee":"Assignee",
-//   "title":"Title",
-//   "title":"Title",
-// }
 
 export default function TicketsTable(props: Props) {
   const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false)
@@ -194,7 +189,6 @@ export default function TicketsTable(props: Props) {
       setTimeout(() => setShowErrorMessage(false), 3000)
     }
   }
-
 
   return (
     <section className="container px-4 mx-auto">
@@ -226,7 +220,8 @@ export default function TicketsTable(props: Props) {
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
 
-            <div className="overflow-hidden h-5elementsT overflow-y-scroll border border-gray-200 dark:border-gray-700 md:rounded-lg table-container">
+            <div className="table-container overflow-hidden h-5elementsT overflow-y-scroll border border-gray-200 dark:border-gray-700 md:rounded-lg table-container"
+              onScroll={props.onScroll}>
 
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-fixed">
                 <thead className="sticky top-0 bg-gray-50 dark:bg-gray-800">
