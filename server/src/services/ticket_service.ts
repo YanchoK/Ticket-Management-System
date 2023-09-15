@@ -50,6 +50,15 @@ const TicketService = {
 
     },
 
+    async getAllTicketsCount() {
+        try {
+            return await prisma.ticket.count()
+        } catch (error) {
+            console.error("Error in getTicketById:", error);
+            throw new Error("Error while getting tickets count");
+        }
+    },
+
     // async getAllTicketsInRange(page: number, limit: number) {
     //     try {
     //         const allTicketsInRange = await prisma.ticket.findMany({

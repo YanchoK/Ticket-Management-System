@@ -25,6 +25,7 @@ export default function Dashboard(props: Props) {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [ticketsCount, setTicketsCount] = useState<number>(0);
 
   const [page, setPage] = useState(1)
 
@@ -54,6 +55,7 @@ export default function Dashboard(props: Props) {
         let newPage = page;
         newPage++;
         setPage((newPage))
+        setTicketsCount(data.allTicketsCount)
       }).catch((error) => {
         setError(error);
       })
@@ -220,7 +222,7 @@ export default function Dashboard(props: Props) {
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col">
+    <div className="w-screen flex flex-col min-h-full">
       {loading && <div>A moment please...</div>}
       {error && (
         <div>{`There is a problem fetching the post data - ${error}`}</div>
@@ -230,12 +232,13 @@ export default function Dashboard(props: Props) {
 
       {/* min-h-screen */}
       <main className='flex-1 flex overflow-hidden'>
-        <div className="flex-1 my-auto mx-auto max-w-full py-6 lg:px-4 overflow-hidden">
+        <div className="flex-1  max-w-full py-8 lg:px-4 overflow-hidden flex flex-col justify-center">
           <TicketsTable
             onScroll={infiniteScroll}
             getUser={getUser}
             onSort={reloadTickets}
             tickets={tickets}
+            ticketsCount={ticketsCount}
             onEdit={handleOpenFormToUpdateTicket}
             handleTicketDelete={handleTicketDelete}
             onSelectedTicket={handleTicketSelection} />

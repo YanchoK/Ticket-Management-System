@@ -166,8 +166,6 @@ import Status from "./Status"
 import { Ticket } from "../../../../../server/src/interfaces/ticket_interface"
 import ErrorMessage from "../../ErrorMessage/ErrorMessage";
 import { User } from "../../../../../server/src/interfaces/user_interface";
-// import InfiniteScroll from "react-infinite-scroll-component";
-
 interface Props {
   tickets: Ticket[]
   handleTicketDelete: (id: number) => any
@@ -176,6 +174,7 @@ interface Props {
   onSort: (sortBy: string) => void,
   getUser: (id: number) => Promise<User>
   onScroll: (event) => void
+  ticketsCount:number
 }
 
 export default function TicketsTable(props: Props) {
@@ -195,25 +194,12 @@ export default function TicketsTable(props: Props) {
       <div className="flex items-center gap-x-3">
         <h2 className="text-lg font-medium text-gray-800 dark:text-white">Tickets</h2>
 
-        <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">{`${props.tickets && props.tickets.length} tickets`}</span>
+        <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">{`${props.ticketsCount} tickets`}</span>
 
         {showErrorMessage ? (
           <div className="ml-auto">
             <ErrorMessage message="Only admin can delete tickets" onClose={() => setShowErrorMessage(false)} />
           </div>) : ''}
-
-        {/* <div>
-          <label className="font-medium">
-            Order by:
-          </label>
-          <select
-            value={formValues.role} onChange={handleSelectChange}
-            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg hover:outline-none hover:">
-            {[...Object.values(orderOptions)].map((option: string) => (
-              <option key={option} value={option}>{FormatStatus(option)}</option>
-            ))}
-          </select>
-        </div> */}
       </div>
 
       <div className="flex flex-col mt-6">

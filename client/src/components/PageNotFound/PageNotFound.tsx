@@ -4,8 +4,8 @@ export default function PageNotFound() {
     }
 
     return (
-        <main>
-            <div className="max-w-screen-xl mx-auto px-4 flex items-center justify-start h-screen md:px-8">
+        <main className="min-h-full flex items-center justify-center">
+            <div className="w-screen mx-auto px-4 min-h-full md:px-8">
                 <div className="max-w-lg mx-auto space-y-3 text-center">
                     <h3 className="text-indigo-600 font-semibold">
                         404 Error

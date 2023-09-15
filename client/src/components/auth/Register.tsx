@@ -72,7 +72,7 @@ export default function Register() {
     }
 
     return (
-        <main className="w-full py-10 h-screen flex flex-col items-center justify-center px-4">
+        <main className="w-full pb-10 min-h-full flex flex-col items-center justify-center px-4">
             <div className="max-w-sm w-full text-gray-600 space-y-5">
                 <div className="text-center">
                     {/* <img src="https://floatui.com/logo.svg" width={150} className="mx-auto" /> */}

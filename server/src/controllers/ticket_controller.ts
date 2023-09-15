@@ -21,9 +21,10 @@ const TicketController = {
                 orderBy = "asc"
             }
 
-            const allTickets: Ticket[] = await ticketService.getAllTickets(sortBy,orderBy, page, limit);
+            const tickets: Ticket[] = await ticketService.getAllTickets(sortBy, orderBy, page, limit);
+            const allTicketsCount: number = await ticketService.getAllTicketsCount()
 
-            res.status(200).send({ count: allTickets.length, tickets: allTickets });
+            res.status(200).send({ allTicketsCount:allTicketsCount, tickets: tickets });
         } catch (error) {
             console.error("Error in getAllTickets:", error);
             res.status(500).json(errorResponces.internalServerError);

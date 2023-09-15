@@ -3,16 +3,6 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import axios from 'axios'
 
-const navigation = [
-  { name: 'Home', href: '/', current: true },
-  { name: 'Dashboard', href: '/dashboard', current: false },
-  { name: 'Team', href: '#', current: false },
-  // { name: 'Projects', href: '#', current: false },
-]
-
-function classNames<T extends string | boolean>(...classes: T[]) {
-  return classes.filter(Boolean).join(' ')
-}
 
 interface Props {
   onCreateTicket?: () => void
@@ -20,6 +10,22 @@ interface Props {
 }
 
 export default function Navbar(props: Props) {
+  const [currentBtn, setCurrentBtn] = useState('Home')
+  const navigation = props.isAuthenticated ? [
+    // { name: 'Home', href: '/' },
+    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'Team', href: '#' },
+    // { name: 'Projects', href: '#', current: false },
+  ] :
+    [
+      { name: 'Home', href: '/' },
+      { name: 'Contacts', href: '/contacts' },
+    ]
+
+  function classNames<T extends string | boolean>(...classes: T[]) {
+    return classes.filter(Boolean).join(' ')
+  }
+
   async function handleLogOut() {
     await axios.post('/api/logout')
   }
@@ -62,11 +68,12 @@ export default function Navbar(props: Props) {
                           <a
                             key={item.name}
                             href={item.href}
+                            onClick={() => setCurrentBtn(item.name)}
                             className={classNames(
-                              item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                              item.href === window.location.pathname ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                               'rounded-md px-3 py-2 text-sm font-medium'
                             )}
-                            aria-current={item.current ? 'page' : undefined}
+                            aria-current={item.href === window.location.pathname ? 'page' : undefined}
                           >
                             {item.name}
                           </a>
@@ -162,10 +169,10 @@ export default function Navbar(props: Props) {
                       as="a"
                       href={item.href}
                       className={classNames(
-                        item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                        item.href === window.location.pathname ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                         'block rounded-md px-3 py-2 text-base font-medium'
                       )}
-                      aria-current={item.current ? 'page' : undefined}
+                      aria-current={item.href === currentBtn ? 'page' : undefined}
                     >
                       {item.name}
                     </Disclosure.Button>
@@ -214,10 +221,10 @@ export default function Navbar(props: Props) {
                               key={item.name}
                               href={item.href}
                               className={classNames(
-                                item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                item.href === window.location.pathname ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                 'rounded-md px-3 py-2 text-sm font-medium'
                               )}
-                              aria-current={item.current ? 'page' : undefined}
+                              aria-current={item.href === window.location.pathname ? 'page' : undefined}
                             >
                               {item.name}
                             </a>
@@ -253,10 +260,10 @@ export default function Navbar(props: Props) {
                         as="a"
                         href={item.href}
                         className={classNames(
-                          item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                          item.href === window.location.pathname ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                           'block rounded-md px-3 py-2 text-base font-medium'
                         )}
-                        aria-current={item.current ? 'page' : undefined}
+                        aria-current={item.href === window.location.pathname ? 'page' : undefined}
                       >
                         {item.name}
                       </Disclosure.Button>

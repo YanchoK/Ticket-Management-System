@@ -35,21 +35,22 @@ export default function App() {
   }, []);
 
   return (
-    <div className="h-screen w-screen flex flex-col">
 
-      <Router>
+    <Router>
+      <div className="h-screen w-screen overflow-x-hidden flex flex-col min-h-full">
         <Navbar onCreateTicket={createTicket} isAuthenticated={authenticated} />
-        <Routes>
-          <Route path="/" element={<Homepage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<PrivateRoute><Dashboard onCloseDetails={closeDetails} openCreateTicketForm={shouldOpenCreateTicketForm} /></PrivateRoute>} />
-          <Route path='*' element={<PageNotFound />} />
-        </Routes>
+        <div className='flex-grow'>
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard onCloseDetails={closeDetails} openCreateTicketForm={shouldOpenCreateTicketForm} /></PrivateRoute>} />
+            <Route path='*' element={<PageNotFound />} />
+          </Routes>
+        </div>
         <Footer />
-      </Router>
+      </div>
+    </Router>
 
-      {/* <Dashboard /> */}
-    </div>
   )
 }
