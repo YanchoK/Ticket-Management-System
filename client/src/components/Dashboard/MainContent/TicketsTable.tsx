@@ -166,6 +166,8 @@ import Status from "./Status"
 import { Ticket } from "../../../../../server/src/interfaces/ticket_interface"
 import ErrorMessage from "../../ErrorMessage/ErrorMessage";
 import { User } from "../../../../../server/src/interfaces/user_interface";
+
+
 interface Props {
   tickets: Ticket[]
   handleTicketDelete: (id: number) => any
@@ -174,7 +176,7 @@ interface Props {
   onSort: (sortBy: string) => void,
   getUser: (id: number) => Promise<User>
   onScroll: (event) => void
-  ticketsCount:number
+  ticketsCount: number
 }
 
 export default function TicketsTable(props: Props) {
@@ -291,6 +293,14 @@ export default function TicketsTable(props: Props) {
 
                           <div className="flex items-center gap-x-2">
                             {/* <img className="object-cover w-8 h-8 rounded-full" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80" alt="" /> */}
+
+
+                            <img
+                              className="h-8 w-8 rounded-full"
+                              src={`https://ik.imagekit.io/cphn9i2ad/${ticket.assignedTo.profileImageName ? ticket.assignedTo.profileImageName : 'default.jpg'}`}
+                              alt=""
+                            />
+
                             <div>
                               <h2 className="text-sm font-medium text-gray-800 dark:text-white ">{ticket.assignedTo.fullName}</h2>
                               <p className="text-xs font-normal text-gray-600 dark:text-gray-400">{ticket.assignedTo.email}</p>

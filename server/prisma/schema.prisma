@@ -36,6 +36,7 @@ model User {
   role            UserRole
   assignedTickets Ticket[] @relation(name: "AssignedToUser")
   // createdTickets  Ticket[] @relation(name: "CreatedByUser")
+  profileImageName String?
 }
 
 model Session {

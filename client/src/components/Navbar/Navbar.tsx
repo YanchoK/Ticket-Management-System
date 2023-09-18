@@ -2,15 +2,18 @@ import { Fragment, SetStateAction, useEffect, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import axios from 'axios'
+import { User } from '../../../../server/src/interfaces/user_interface'
 
 
 interface Props {
   onCreateTicket?: () => void
   isAuthenticated: boolean
+  user: User
 }
 
 export default function Navbar(props: Props) {
   const [currentBtn, setCurrentBtn] = useState('Home')
+
   const navigation = props.isAuthenticated ? [
     // { name: 'Home', href: '/' },
     { name: 'Dashboard', href: '/dashboard' },
@@ -29,6 +32,7 @@ export default function Navbar(props: Props) {
   async function handleLogOut() {
     await axios.post('/api/logout')
   }
+
 
   return (
     <>
@@ -89,26 +93,24 @@ export default function Navbar(props: Props) {
                       Create ticket
                     </button>
 
-                    {/* Bell (notifications) */}
-                    {/* <button
-                  type="button"
-                  className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button> */}
 
                     {/* Profile dropdown */}
-                    <Menu as="div" className="relative ml-3">
+                    <Menu as="div" className="relative ml-8">
                       <div>
-                        <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                        <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm">
                           <span className="absolute -inset-1.5" />
                           <span className="sr-only">Open user menu</span>
-                          <img
+                          {/* <img
                             className="h-8 w-8 rounded-full"
                             src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                             alt=""
+                          /> */}
+                          <img
+                            className="h-10 w-11 rounded-full"
+                            src={`https://ik.imagekit.io/cphn9i2ad/${props.user && props.user.profileImageName ? props.user.profileImageName : 'default.jpg'}`}
+                            alt=""
                           />
+                          <p className='block px-4 py-2  text-sm  text-gray-100 font-medium'>{props.user ? props.user.fullName : ''}</p>
                         </Menu.Button>
                       </div>
                       <Transition
@@ -122,16 +124,23 @@ export default function Navbar(props: Props) {
                       >
                         <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                           <Menu.Item>
+                            {/* <div className='border'> */}
+
+                            <p className=' border block px-4 py-2  text-sm  text-gray-900 font-medium'>{props.user ? props.user.fullName : ''}</p>
+                            {/* </div> */}
+
+                          </Menu.Item>
+                          <Menu.Item>
                             {({ active }) => (
                               <a
-                                href="#"
+                                href="/profile"
                                 className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                               >
                                 Your Profile
                               </a>
                             )}
                           </Menu.Item>
-                          <Menu.Item>
+                          {/* <Menu.Item>
                             {({ active }) => (
                               <a
                                 href="#"
@@ -140,7 +149,7 @@ export default function Navbar(props: Props) {
                                 Settings
                               </a>
                             )}
-                          </Menu.Item>
+                          </Menu.Item> */}
                           <Menu.Item>
                             {({ active }) => (
                               <a

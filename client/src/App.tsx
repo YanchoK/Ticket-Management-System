@@ -10,10 +10,13 @@ import Register from './components/Auth/Register';
 import isAuthenticated from './components/utils/isAuthenticated';
 import { useEffect, useState } from 'react';
 import PageNotFound from './components/PageNotFound/PageNotFound';
+import { User } from '../../server/src/interfaces/user_interface';
+import ProfilePage from './components/ProfilePage/ProflePage';
 
 export default function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [shouldOpenCreateTicketForm, setShouldOpenCreateTicketForm] = useState(false);
+  const [authenticatedUser, setAuthenticatedUser] = useState<User>(null)
 
   function createTicket() {
     setShouldOpenCreateTicketForm(true)
@@ -22,11 +25,27 @@ export default function App() {
     setShouldOpenCreateTicketForm(false)
   }
 
+  function getAuthenticatedUser() {
+    fetch(`/api/me`)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw response;
+        }
+      })
+      .then(data => {
+        setAuthenticatedUser(data)
+      })
+  }
+
   useEffect(() => {
     isAuthenticated().then((authStatus) => {
       if (authStatus) {
         // User is authenticated
+        console.log("Authenticating the user...")
         setAuthenticated(true);
+        getAuthenticatedUser()
       } else {
         // User is not authenticated
         setAuthenticated(false);
@@ -38,13 +57,19 @@ export default function App() {
 
     <Router>
       <div className="h-screen w-screen overflow-x-hidden flex flex-col min-h-full">
-        <Navbar onCreateTicket={createTicket} isAuthenticated={authenticated} />
+        <Navbar user={authenticatedUser} onCreateTicket={createTicket} isAuthenticated={authenticated} />
         <div className='flex-grow'>
           <Routes>
             <Route path="/" element={<Homepage />} />
+
             <Route path="/login" element={<Login />} />
+
             <Route path="/register" element={<Register />} />
+
             <Route path="/dashboard" element={<PrivateRoute><Dashboard onCloseDetails={closeDetails} openCreateTicketForm={shouldOpenCreateTicketForm} /></PrivateRoute>} />
+
+            <Route path="/profile" element={<PrivateRoute><ProfilePage onProfileUpdate={(updatedUser)=>setAuthenticatedUser(updatedUser)}  user={authenticatedUser}/></PrivateRoute>} />
+            
             <Route path='*' element={<PageNotFound />} />
           </Routes>
         </div>

@@ -20,6 +20,7 @@ import auth_routes from './routes/auth_routes';
 import errorHandler from './middlewares/errorHandler';
 import  initializePassport  from './middlewares/initializePassport';
 import ticket_routes from './routes/ticket_routes';
+import ImageKit from 'imagekit'
 
 const app = express();
 app.use(cors());
@@ -32,6 +33,24 @@ app.get("/api", (req: Request, res: Response): void => {
         res.send(error.message)
     }
 })
+
+const imagekit = new ImageKit({
+    urlEndpoint: 'https://ik.imagekit.io/cphn9i2ad',
+    publicKey: 'public_FM4rPUXRbrL+rmMEN7dch8Da28k=',
+    privateKey: 'private_yq8HfqFxGkghrqa4Tzk63cJJCfY='
+  });
+
+  app.get('/api/imageAuth', function (req, res) {
+    var result = imagekit.getAuthenticationParameters();
+    res.send(result);
+  });
+
+  app.post('/api/uploadImage', function (req, res) {
+   console.log(req)
+   res.send(req)
+  });
+
+
 
 initializePassport(app);
 
