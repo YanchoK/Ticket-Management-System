@@ -74,7 +74,15 @@ const UserController = {
                 }
 
                 const createdUser = await userService.createNewUser(newUser)
-                res.status(201).json({ message: "User is created", data: createdUser });
+                req.login(createdUser, (err) => {
+                    if (err) {
+                        console.error("Error during automatic login:", err);
+                        return res.status(500).json(errorResponces.internalServerError);
+                    }
+                    // Return a success response
+                    res.status(201).json({ message: "User is created and logged in", data: createdUser });
+                });
+                // res.status(201).json({ message: "User is created", data: createdUser });
             }
             catch (error: any) {
                 console.error("Error in createNewUser:", error);
@@ -143,7 +151,7 @@ const UserController = {
 
 
     async test1(req: Request, res: Response, next: NextFunction) {
-        const { error, value } = validator.validateSignup(req.body);
+        const { error, value } = validator.validateLogIn(req.body);
 
         if (error) throw error;
 

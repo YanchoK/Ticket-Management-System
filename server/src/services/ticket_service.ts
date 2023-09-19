@@ -6,33 +6,77 @@ const prisma = new PrismaClient();
 
 const TicketService = {
 
-    async getAllTickets(): Promise<Ticket[]> {
+    async getAllTickets(sortBy?: string, orderBy?: string, page?: number, limit?: number): Promise<Ticket[]> {
         try {
-            return await prisma.ticket.findMany() as Ticket[]
-        } catch (error) {
-            console.error("Error in getAllTicketsInRange:", error);
-            throw new Error("Error while getting tickets");
-        }
-    },
+            let conditions = {}
 
-    async getAllTicketsInRange(page: number, limit: number) {
-        try {
-            const allTicketsInRange = await prisma.ticket.findMany({
-                skip: (page - 1) * limit,
-                take: limit,
-            });
+            if (sortBy) {
+                const orderByCondition = {
+                    orderBy: [
+                        {
+                            [sortBy]: `${orderBy}`,
+                        },
+                    ],
+                }
+                conditions = { ...orderByCondition, ...conditions }
 
-            if (allTicketsInRange.length === 0) {
-                const ticketsCount = await prisma.ticket.count()
-                throw { status: 500, message: `Number of elements exieded! Elements count: ${ticketsCount}.` };
             }
 
-            return allTicketsInRange as Ticket[];
+            if (page && limit) {
+                const paginationCondition = {
+                    skip: (page - 1) * limit,
+                    take: limit
+                }
+
+
+                conditions = { ...paginationCondition, ...conditions }
+            }
+
+
+            const joinUser = {
+                include: {
+                    assignedTo: true
+                }
+            }
+
+            conditions = { ...joinUser, ...conditions }
+
+            return await prisma.ticket.findMany({ ...conditions }) as Ticket[]
+
         } catch (error) {
             console.error("Error in getAllTicketsInRange:", error);
             throw new Error("Error while getting tickets");
         }
+
     },
+
+    async getAllTicketsCount() {
+        try {
+            return await prisma.ticket.count()
+        } catch (error) {
+            console.error("Error in getTicketById:", error);
+            throw new Error("Error while getting tickets count");
+        }
+    },
+
+    // async getAllTicketsInRange(page: number, limit: number) {
+    //     try {
+    //         const allTicketsInRange = await prisma.ticket.findMany({
+    //             skip: (page - 1) * limit,
+    //             take: limit,
+    //         });
+
+    //         if (allTicketsInRange.length === 0) {
+    //             const ticketsCount = await prisma.ticket.count()
+    //             throw { status: 500, message: `Number of elements exieded! Elements count: ${ticketsCount}.` };
+    //         }
+
+    //         return allTicketsInRange as Ticket[];
+    //     } catch (error) {
+    //         console.error("Error in getAllTicketsInRange:", error);
+    //         throw new Error("Error while getting tickets");
+    //     }
+    // },
 
     async getTicketById(ticketId: number) {
         try {
@@ -51,10 +95,11 @@ const TicketService = {
 
     async createNewTicket(newTicket: Ticket) {
         try {
+            const { assignedTo, ...data } = newTicket
             const createdTicket = await prisma.ticket.create({
-                data: { ...newTicket }
+                data: { ...data }
             })
-
+            
             return createdTicket;
         }
         catch (error: any) {
@@ -65,12 +110,13 @@ const TicketService = {
 
     async updateTicket(ticketId: number, changedTicket: Ticket) {
         try {
+            const { assignedTo, ...data } = changedTicket
             const updatedTicket = await prisma.ticket.update({
                 where: {
                     id: ticketId
                 },
                 data: {
-                    ...changedTicket
+                    ...data
                 },
             });
 

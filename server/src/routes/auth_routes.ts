@@ -9,6 +9,7 @@ router.post("/register", userController.createNewUser);
 router.post("/login", authController.login);
 router.post("/logout", isAuthenticated, authController.logout);
 router.get("/me", isAuthenticated, authController.getCurrentUser);
+router.get("/checkAuth", isAuthenticated, authController.checkAuth);
 
 
 router.post('/test1',tryCatch(userController.test1));

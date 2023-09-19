@@ -21,6 +21,30 @@ app.get("/api", (req, res) => {
         res.send(error.message);
     }
 });
+app.get('/api/a', async function (req, res) {
+    var axios = require('axios');
+    const username = process.env.ATLASSIAN_USERNAME;
+    const password = process.env.ATLASSIAN_API_KEY;
+    const domain = process.env.DOMAIN;
+    const auth = {
+        username: username,
+        password: password
+    };
+    try {
+        const baseUrl = 'https://' + domain + '.atlassian.net';
+        const config = {
+            headers: { 'Accept': 'application/json' },
+            auth: auth
+        };
+        const response = await axios.get(`${baseUrl}` + `/rest/api/2/events/`, config);
+        console.log(response);
+        res.json(response.data);
+    }
+    catch (error) {
+        console.log('error: ');
+        console.log(error.response.data.errors);
+    }
+});
 (0, initializePassport_1.default)(app);
 app.use('/api/users', user_routes_1.default);
 app.use('/api/tickets', ticket_routes_1.default);

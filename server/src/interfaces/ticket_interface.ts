@@ -7,6 +7,10 @@ export interface Ticket {
     state: TicketState;
     priority: TicketPriority;
     assignedToId?: number;
+    createdDate?:Date;
+    updatedDate?:Date;
+    assignedTo?:User|undefined
+    JIRA_ID?:string
   }
   
   export enum TicketState {

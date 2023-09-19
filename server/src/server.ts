@@ -18,7 +18,7 @@ import cors from 'cors';
 import user_routes from './routes/user_routes';
 import auth_routes from './routes/auth_routes';
 import errorHandler from './middlewares/errorHandler';
-import  initializePassport  from './middlewares/initializePassport';
+import initializePassport from './middlewares/initializePassport';
 import ticket_routes from './routes/ticket_routes';
 
 const app = express();
@@ -32,6 +32,40 @@ app.get("/api", (req: Request, res: Response): void => {
         res.send(error.message)
     }
 })
+
+app.get('/api/a', async function (req, res) {
+    var axios = require('axios');
+
+
+    const username = process.env.ATLASSIAN_USERNAME
+    const password = process.env.ATLASSIAN_API_KEY
+    const domain = process.env.DOMAIN
+
+    const auth = {
+        username: username,
+        password: password
+    };
+
+    try {
+        const baseUrl = 'https://' + domain + '.atlassian.net';
+
+        const config = {
+            headers: { 'Accept': 'application/json' },
+            auth: auth
+        };
+
+        const response = await axios.get(`${baseUrl}` + `/rest/api/2/events/` , config);
+
+        console.log(response)
+        res.json(response.data);
+    } catch (error: any) {
+        console.log('error: ')
+        console.log(error.response.data.errors)
+    }
+
+});
+
+
 
 initializePassport(app);
 

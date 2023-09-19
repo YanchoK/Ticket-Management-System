@@ -8,6 +8,7 @@ export interface User {
   email: string;
   passwordHash: string;
   role: UserRole;
+  profileImageName?: string;
   // assignedTickets?: Ticket[];
 }
 

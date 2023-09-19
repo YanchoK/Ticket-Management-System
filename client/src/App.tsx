@@ -1,57 +1,81 @@
-import { useState, useEffect } from 'react';
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
 import './App.css'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Dashboard from "./components/Dashboard/Dashboard";
+import Homepage from "./components/Homepage/Homepage";
+import Navbar from './components/Navbar/Navbar';
+import PrivateRoute from './components/utils/PrivateRoute';
+import Login from './components/Auth/Login';
+import Footer from './components/Footer/Footer';
+import Register from './components/Auth/Register';
+import isAuthenticated from './components/utils/isAuthenticated';
+import { useEffect, useState } from 'react';
+import PageNotFound from './components/PageNotFound/PageNotFound';
+import { User } from '../../server/src/interfaces/user_interface';
+import ProfilePage from './components/ProfilePage/ProflePage';
 
-function App() {
+export default function App() {
+  const [authenticated, setAuthenticated] = useState(false);
+  const [shouldOpenCreateTicketForm, setShouldOpenCreateTicketForm] = useState(false);
+  const [authenticatedUser, setAuthenticatedUser] = useState<User>(null)
 
-  // const [data, setData] = useState<{ message: string } | null>(null);
+  function createTicket() {
+    setShouldOpenCreateTicketForm(true)
+  }
+  function closeDetails() {
+    setShouldOpenCreateTicketForm(false)
+  }
 
-  // useEffect(() => {
-  //   fetch(`/api`)
-  //     .then((response) => response.json())
-  //     .then((responseData) => setData(responseData))
-  //     .catch((error) => console.error('Error fetching data:', error));
-  // }, []);
-
-  // return (
-  //   <div>
-  //     <h1>Data from Server</h1>
-  //     {data ? <p>{data.message}</p> : <p>Loading...</p>}
-  //   </div>
-  // );
-
-  //////////////////// Automatically update the info /////////////////////////////////////////////
-
-  const [data, setData] = useState<{ message: string } | null>(null);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch('/api');
-      const newData = await response.json();
-      setData(newData);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+  function getAuthenticatedUser() {
+    fetch(`/api/me`)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw response;
+        }
+      })
+      .then(data => {
+        setAuthenticatedUser(data)
+      })
+  }
 
   useEffect(() => {
-    fetchData(); // Fetch initial data
-    // const interval = setInterval(fetchData, 2000); // Fetch every 2 seconds
-
-    // return () => {
-    //   clearInterval(interval); // Clean up the interval on unmount
-    // };
+    isAuthenticated().then((authStatus) => {
+      if (authStatus) {
+        // User is authenticated
+        console.log("Authenticating the user...")
+        setAuthenticated(true);
+        getAuthenticatedUser()
+      } else {
+        // User is not authenticated
+        setAuthenticated(false);
+      }
+    })
   }, []);
 
   return (
-    <div>
-      <h1>Data from Server</h1>
-      {data ? <p>{data.message}</p> : <p>Loading...</p>}
-    </div>
-  );
+
+    <Router>
+      <div className="h-screen w-screen overflow-x-hidden flex flex-col min-h-full">
+        <Navbar user={authenticatedUser} onCreateTicket={createTicket} isAuthenticated={authenticated} />
+        <div className='flex-grow'>
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+
+            <Route path="/login" element={<Login />} />
+
+            <Route path="/register" element={<Register />} />
+
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard onCloseDetails={closeDetails} openCreateTicketForm={shouldOpenCreateTicketForm} /></PrivateRoute>} />
+
+            <Route path="/profile" element={<PrivateRoute><ProfilePage onProfileUpdate={(updatedUser)=>setAuthenticatedUser(updatedUser)}  user={authenticatedUser}/></PrivateRoute>} />
+            
+            <Route path='*' element={<PageNotFound />} />
+          </Routes>
+        </div>
+        <Footer />
+      </div>
+    </Router>
+
+  )
 }
-
-
-
-export default App
