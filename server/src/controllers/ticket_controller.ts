@@ -3,6 +3,7 @@ import { Ticket } from "../interfaces/ticket_interface"
 import ticketService from '../services/ticket_service'
 import errorResponces from "../middlewares/errorResponces"
 import validator from '../middlewares/validator';
+import JiraService from '../services/jira_service';
 
 const TicketController = {
 
@@ -24,7 +25,7 @@ const TicketController = {
             const tickets: Ticket[] = await ticketService.getAllTickets(sortBy, orderBy, page, limit);
             const allTicketsCount: number = await ticketService.getAllTicketsCount()
 
-            res.status(200).send({ allTicketsCount:allTicketsCount, tickets: tickets });
+            res.status(200).send({ allTicketsCount: allTicketsCount, tickets: tickets });
         } catch (error) {
             console.error("Error in getAllTickets:", error);
             res.status(500).json(errorResponces.internalServerError);
@@ -56,7 +57,6 @@ const TicketController = {
 
     async createNewTicket(req: Request, res: Response) {
         let { error, value } = validator.validateTicket(req.body)
-        const { firstName, lastName, email, password, role } = value;
 
         if (error) {
             // res.status(400).json(errorResponces.invalidTicketData);
@@ -68,8 +68,13 @@ const TicketController = {
         // }
         else {
             try {
-                const newTicket: Ticket = value
+                let { shortDescription, description, state } = (value as Ticket)
+                const JIRA_ID: string = await JiraService.createIssue(shortDescription, description, state)
+
+                const newTicket: Ticket = { JIRA_ID, ...value }
+
                 const createdTicket = await ticketService.createNewTicket(newTicket)
+
                 res.status(201).json({ message: "Ticket is created", data: createdTicket });
             }
             catch (error: any) {
@@ -80,20 +85,20 @@ const TicketController = {
     },
 
     async updateTicket(req: Request, res: Response) {
-        let validation = validator.validateTicket(req.body)
-        let changedTicket: Ticket = validation.value
+        let ticketValidation = validator.validateTicket(req.body)
+        let changedTicket: Ticket = ticketValidation.value
 
-        if (validation.error) {
-            console.log(validation.error);
-            return res.status(400).send({ message: `${errorResponces.invalidTicketData.message}. ${validation.error.message}` });
+        if (ticketValidation.error) {
+            console.log(ticketValidation.error);
+            return res.status(400).send({ message: `${errorResponces.invalidTicketData.message}. ${ticketValidation.error.message}` });
         }
 
-        validation = validator.validateId(req.params)
-        let { id } = validation.value
+       let  idValidation = validator.validateId(req.params)
+        let { id } = idValidation.value
 
-        if (validation.error) {
-            console.log(validation.error);
-            return res.status(400).send({ message: validation.error.message });
+        if (idValidation.error) {
+            console.log(idValidation.error);
+            return res.status(400).send({ message: idValidation.error.message });
         }
 
         try {
@@ -104,6 +109,12 @@ const TicketController = {
             }
 
             const updatedTicket = await ticketService.updateTicket(id, changedTicket)
+
+            let { JIRA_ID, shortDescription, description, state } = (updatedTicket as Ticket)
+            if (JIRA_ID) {
+                await JiraService.updateIssue(JIRA_ID, shortDescription, description, state)
+            }
+
             res.status(200).json({ message: "Ticket is updated", data: updatedTicket });
         } catch (error: any) {
             console.error("Error in updateTicket:", error);
@@ -125,6 +136,10 @@ const TicketController = {
 
             if (!ticket) {
                 return res.status(404).json(errorResponces.ticketNotFound);
+            }
+
+            if(ticket.JIRA_ID){
+                await JiraService.deleteTicket(ticket.JIRA_ID)
             }
 
             await ticketService.deleteTicket(id)

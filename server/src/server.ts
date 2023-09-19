@@ -18,9 +18,8 @@ import cors from 'cors';
 import user_routes from './routes/user_routes';
 import auth_routes from './routes/auth_routes';
 import errorHandler from './middlewares/errorHandler';
-import  initializePassport  from './middlewares/initializePassport';
+import initializePassport from './middlewares/initializePassport';
 import ticket_routes from './routes/ticket_routes';
-import ImageKit from 'imagekit'
 
 const app = express();
 app.use(cors());
@@ -34,21 +33,37 @@ app.get("/api", (req: Request, res: Response): void => {
     }
 })
 
-const imagekit = new ImageKit({
-    urlEndpoint: 'https://ik.imagekit.io/cphn9i2ad',
-    publicKey: 'public_FM4rPUXRbrL+rmMEN7dch8Da28k=',
-    privateKey: 'private_yq8HfqFxGkghrqa4Tzk63cJJCfY='
-  });
+app.get('/api/a', async function (req, res) {
+    var axios = require('axios');
 
-  app.get('/api/imageAuth', function (req, res) {
-    var result = imagekit.getAuthenticationParameters();
-    res.send(result);
-  });
 
-  app.post('/api/uploadImage', function (req, res) {
-   console.log(req)
-   res.send(req)
-  });
+    const username = process.env.ATLASSIAN_USERNAME
+    const password = process.env.ATLASSIAN_API_KEY
+    const domain = process.env.DOMAIN
+
+    const auth = {
+        username: username,
+        password: password
+    };
+
+    try {
+        const baseUrl = 'https://' + domain + '.atlassian.net';
+
+        const config = {
+            headers: { 'Accept': 'application/json' },
+            auth: auth
+        };
+
+        const response = await axios.get(`${baseUrl}` + `/rest/api/2/events/` , config);
+
+        console.log(response)
+        res.json(response.data);
+    } catch (error: any) {
+        console.log('error: ')
+        console.log(error.response.data.errors)
+    }
+
+});
 
 
 

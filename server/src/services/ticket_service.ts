@@ -99,7 +99,7 @@ const TicketService = {
             const createdTicket = await prisma.ticket.create({
                 data: { ...data }
             })
-
+            
             return createdTicket;
         }
         catch (error: any) {

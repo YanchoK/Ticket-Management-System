@@ -36,7 +36,8 @@ const schemas = {
         description: Joi.string(),
         state: Joi.string().valid(...Object.values(TicketState)).optional(),
         priority: Joi.string().valid(...Object.values(TicketPriority)).optional(),
-        assignedToId: Joi.number().optional().allow(null)
+        assignedToId: Joi.number().optional().allow(null),
+        JIRA_ID:Joi.string().optional().allow(null)
     }),
 }
 

@@ -10,6 +10,7 @@ export interface Ticket {
     createdDate?:Date;
     updatedDate?:Date;
     assignedTo?:User|undefined
+    JIRA_ID?:string
   }
   
   export enum TicketState {
