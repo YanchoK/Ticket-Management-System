@@ -10,12 +10,13 @@ const auth_routes_1 = __importDefault(require("./routes/auth_routes"));
 const errorHandler_1 = __importDefault(require("./middlewares/errorHandler"));
 const initializePassport_1 = __importDefault(require("./middlewares/initializePassport"));
 const ticket_routes_1 = __importDefault(require("./routes/ticket_routes"));
+const webhook_routes_1 = __importDefault(require("./routes/webhook_routes"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.get("/api", (req, res) => {
     try {
-        res.json({ message: "Hello World!" });
+        res.send("<p>Helloo!</p>");
     }
     catch (error) {
         res.send(error.message);
@@ -38,6 +39,7 @@ app.get('/api/a', async function (req, res) {
         };
         const response = await axios.get(`${baseUrl}` + `/rest/api/2/events/`, config);
         console.log(response);
+        console.log("baaa");
         res.json(response.data);
     }
     catch (error) {
@@ -49,6 +51,7 @@ app.get('/api/a', async function (req, res) {
 app.use('/api/users', user_routes_1.default);
 app.use('/api/tickets', ticket_routes_1.default);
 app.use('/api/', auth_routes_1.default);
+app.use('/api/webhooks', webhook_routes_1.default);
 app.use(errorHandler_1.default);
 const PORT = 3000;
 app.listen(PORT, () => {

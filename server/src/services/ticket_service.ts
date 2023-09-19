@@ -93,13 +93,28 @@ const TicketService = {
         }
     },
 
+    async getTicketByJiraID(jiraID: string) {
+        try {
+            const ticket = await prisma.ticket.findFirst({
+                where: {
+                    JIRA_ID: jiraID
+                }
+            });
+
+            return ticket as Ticket;
+        } catch (error: any) {
+            console.error("Error in getTicketById:", error);
+            throw new Error("Error while getting ticket by ID");
+        }
+    },
+
     async createNewTicket(newTicket: Ticket) {
         try {
             const { assignedTo, ...data } = newTicket
             const createdTicket = await prisma.ticket.create({
                 data: { ...data }
             })
-            
+
             return createdTicket;
         }
         catch (error: any) {

@@ -20,6 +20,7 @@ import auth_routes from './routes/auth_routes';
 import errorHandler from './middlewares/errorHandler';
 import initializePassport from './middlewares/initializePassport';
 import ticket_routes from './routes/ticket_routes';
+import webhook_routes from './routes/webhook_routes';
 
 const app = express();
 app.use(cors());
@@ -27,7 +28,8 @@ app.use(express.json())
 
 app.get("/api", (req: Request, res: Response): void => {
     try {
-        res.json({ message: "Hello World!" })
+        res.send("<p>Helloo!</p>")
+        // res.json({ message: "Hello World!" })
     } catch (error: any) {
         res.send(error.message)
     }
@@ -54,9 +56,10 @@ app.get('/api/a', async function (req, res) {
             auth: auth
         };
 
-        const response = await axios.get(`${baseUrl}` + `/rest/api/2/events/` , config);
+        const response = await axios.get(`${baseUrl}` + `/rest/api/2/events/`, config);
 
         console.log(response)
+        console.log("baaa")
         res.json(response.data);
     } catch (error: any) {
         console.log('error: ')
@@ -65,14 +68,13 @@ app.get('/api/a', async function (req, res) {
 
 });
 
-
-
 initializePassport(app);
 
 // Routes
 app.use('/api/users', user_routes);
 app.use('/api/tickets', ticket_routes);
 app.use('/api/', auth_routes);
+app.use('/api/webhooks',webhook_routes)
 
 app.use(errorHandler);
 
