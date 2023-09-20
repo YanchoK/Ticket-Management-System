@@ -26,7 +26,7 @@ const schemas = {
     updateUserSchema: Joi.object({
         firstName: Joi.string().optional(),
         lastName: Joi.string().optional(),
-        // password: Joi.string().min(6).max(30).optional(),
+        passwordHash: Joi.string().min(6).max(30).optional(),
         profileImageName: Joi.string().optional(),
         role: Joi.string().valid(...Object.values(UserRole)).optional()
         // email: Joi.string().email().required(),

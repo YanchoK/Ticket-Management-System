@@ -5,6 +5,7 @@ import errorResponces from "../middlewares/errorResponces"
 import validator from '../middlewares/validator';
 import AppError from '../utils/AppError';
 import errorCodes from '../utils/errorCodes';
+import bcrypt from "bcrypt";
 
 const UserController = {
 
@@ -115,7 +116,11 @@ const UserController = {
                 return res.status(404).json(errorResponces.userNotFound);
             }
 
-            const fullName = `${user.firstName} ${user.lastName}`
+            if (changedUser.passwordHash) {
+                changedUser.passwordHash= await bcrypt.hash(changedUser.passwordHash, 10);
+            }
+
+            const fullName = `${changedUser.firstName?changedUser.firstName:user.firstName} ${changedUser.lastName?changedUser.lastName:user.lastName}`
             changedUser.fullName=fullName
             
             const updatedUser = await userService.updateUser(id, changedUser)
