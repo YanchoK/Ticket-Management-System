@@ -13,8 +13,8 @@ const TicketController = {
             const limit: number = parseInt(req.query.limit as string); // Number of items per page
             let sortBy: string | undefined = req.query.sortBy as string
             let orderBy: string | undefined = req.query.orderBy as string
-
-            const keys = ["shortDescription", "description", "state", "priority", "assignedToId", "createdDate,", "updatedDate"]
+       
+            const keys = ["shortDescription", "description", "state", "priority", "assignedToId", "createdDate", "updatedDate"]
             if (sortBy && !keys.includes(sortBy)) {
                 sortBy = undefined
             }
@@ -144,7 +144,7 @@ const TicketController = {
             else {
                 await ticketService.deleteTicket(id)
             }
-            
+
             res.status(200).json({ message: "Ticket is deleted" });
         } catch (error: any) {
             console.error("Error in deleteTicket:", error);
