@@ -93,7 +93,7 @@ const TicketController = {
             return res.status(400).send({ message: `${errorResponces.invalidTicketData.message}. ${ticketValidation.error.message}` });
         }
 
-       let  idValidation = validator.validateId(req.params)
+        let idValidation = validator.validateId(req.params)
         let { id } = idValidation.value
 
         if (idValidation.error) {
@@ -133,16 +133,18 @@ const TicketController = {
 
         try {
             const ticket = await ticketService.getTicketById(id)
-
+            console.log(ticket)
             if (!ticket) {
                 return res.status(404).json(errorResponces.ticketNotFound);
             }
 
-            if(ticket.JIRA_ID){
+            if (ticket.JIRA_ID) {
                 await JiraService.deleteTicket(ticket.JIRA_ID)
             }
-
-            await ticketService.deleteTicket(id)
+            else {
+                await ticketService.deleteTicket(id)
+            }
+            
             res.status(200).json({ message: "Ticket is deleted" });
         } catch (error: any) {
             console.error("Error in deleteTicket:", error);
