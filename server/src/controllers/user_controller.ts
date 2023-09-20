@@ -115,6 +115,9 @@ const UserController = {
                 return res.status(404).json(errorResponces.userNotFound);
             }
 
+            const fullName = `${user.firstName} ${user.lastName}`
+            changedUser.fullName=fullName
+            
             const updatedUser = await userService.updateUser(id, changedUser)
             res.status(200).json({ message: "User is updated", data: updatedUser });
         } catch (error: any) {

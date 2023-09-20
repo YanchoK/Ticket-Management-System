@@ -89,7 +89,7 @@ const UserService = {
         try {
             const updatedUser = await prisma.user.update({
                 where: {
-                  id:userId
+                    id: userId
                 },
                 data: {
                     ...changedUser
