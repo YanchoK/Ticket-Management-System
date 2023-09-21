@@ -132,8 +132,8 @@ const JiraService = {
             console.log(response.status)
             return response.status;
         } catch (error: any) {
-            console.log('error: ')
-            console.log(error.response.data.errors)
+            console.log('error deleting ticket from jira: ')
+            console.log(error.response.data)
         }
     }
 

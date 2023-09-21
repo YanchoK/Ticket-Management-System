@@ -15,9 +15,9 @@ export default function Navbar(props: Props) {
   const [currentBtn, setCurrentBtn] = useState('Home')
 
   const navigation = props.isAuthenticated ? [
-    // { name: 'Home', href: '/' },
+    { name: 'Home', href: '/' },
     { name: 'Dashboard', href: '/dashboard' },
-    { name: 'Team', href: '#' },
+    // { name: 'Team', href: '#' },
     // { name: 'Projects', href: '#', current: false },
   ] :
     [
@@ -106,7 +106,7 @@ export default function Navbar(props: Props) {
                             alt=""
                           /> */}
                           <img
-                            className="h-10 w-11 rounded-full"
+                            className="h-10 w-10 rounded-full"
                             src={`https://ik.imagekit.io/cphn9i2ad/${props.user && props.user.profileImageName ? props.user.profileImageName : 'default.jpg'}`}
                             alt=""
                           />

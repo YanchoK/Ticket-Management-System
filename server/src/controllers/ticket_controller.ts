@@ -68,6 +68,7 @@ const TicketController = {
         // }
         else {
             try {
+                console.log("ticket controller")
                 let { shortDescription, description, state } = (value as Ticket)
                 const JIRA_ID: string = await JiraService.createIssue(shortDescription, description, state)
 
@@ -96,10 +97,10 @@ const TicketController = {
         let idValidation = validator.validateId(req.params)
         let { id } = idValidation.value
 
-        if (idValidation.error) {
-            console.log(idValidation.error);
-            return res.status(400).send({ message: idValidation.error.message });
-        }
+        // if (idValidation.error) {
+        //     console.log(idValidation.error);
+        //     return res.status(400).send({ message: idValidation.error.message });
+        // }
 
         try {
             const ticket = await ticketService.getTicketById(id)
@@ -141,13 +142,13 @@ const TicketController = {
             if (ticket.JIRA_ID) {
                 await JiraService.deleteTicket(ticket.JIRA_ID)
             }
-            else {
+            // else {
                 await ticketService.deleteTicket(id)
-            }
+            // }
 
             res.status(200).json({ message: "Ticket is deleted" });
         } catch (error: any) {
-            console.error("Error in deleteTicket:", error);
+            console.error("Error in deleteTicket:", error.message);
             res.status(500).json(errorResponces.internalServerError);
         }
     }

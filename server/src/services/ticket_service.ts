@@ -110,6 +110,8 @@ const TicketService = {
 
     async createNewTicket(newTicket: Ticket) {
         try {
+            console.log("ticket service")
+
             const { assignedTo, ...data } = newTicket
             const createdTicket = await prisma.ticket.create({
                 data: { ...data }

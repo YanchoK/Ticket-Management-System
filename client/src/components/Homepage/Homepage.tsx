@@ -41,7 +41,7 @@ export default function Homepage() {
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
                                         </svg>
                                     </span>
-                                    <h1 className="text-xl font-semibold text-gray-700 capitalize dark:text-white">elegant Dark Mode</h1>
+                                    <h1 className="text-xl font-semibold text-gray-700 capitalize dark:text-white">Helps you to be productve</h1>
                                     <p className="text-gray-500 dark:text-gray-300">
                                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab nulla quod dignissimos vel non corrupti doloribus voluptatum eveniet
                                     </p>

@@ -63,7 +63,8 @@ export default function Dashboard(props: Props) {
         setLoading(false);
       });
   }
-
+  
+// Problem !!!!!!!!!!!!
   useEffect(() => {
     if (tickets.length === 0) {
       getTickets()
@@ -145,6 +146,8 @@ export default function Dashboard(props: Props) {
       const response = await fetch(`/api/tickets/${ticket.id}`, requestOptions)
       const responceData = await response.json()
 
+      // fetch(`/api/tickets/${ticket.id}`, requestOptions)
+
       if (response.ok) {
         reloadTickets()
         handleCloseDetails()
@@ -169,6 +172,8 @@ export default function Dashboard(props: Props) {
 
       const response = await fetch(`/api/tickets/`, requestOptions)
       const responceData = await response.json()
+
+      // const response = fetch(`/api/tickets/`, requestOptions)
 
       if (response.ok) {
         handleCloseDetails()

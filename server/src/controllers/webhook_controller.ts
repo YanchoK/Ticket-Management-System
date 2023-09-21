@@ -10,15 +10,15 @@ async function onIssueCreate(req: Request, res: Response) {
         "10013": "REVIEW",
         "10023": "DONE",
     }
-
+    console.log("webhook controller issue create")
     try {
         const body: any = req.body
-
         if (body && !body.check) {
             const key = body.issue.key
             let ticket: Ticket = await TicketService.getTicketByJiraID(key)
-
             if (!ticket) {
+                console.log("webhook controller issue create 2222222222222")
+
                 const { summary, description, status } = body.issue.fields
                 let ticket: Ticket = {
                     shortDescription: summary,
@@ -105,7 +105,7 @@ async function onIssueDelete(req: Request, res: Response) {
 const WebhookController = {
 
     async onIssueEvent(req: Request, res: Response) {
-        console.log(req.body)
+        // console.log(req.body)
         const eventType = req.body.webhookEvent
         if (eventType) {
             switch (eventType) {

@@ -69,7 +69,7 @@ export default function Login() {
                             className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
                         />
                     </div>
-                    <div className="flex items-center justify-between text-sm">
+                    {/* <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-x-3">
                             <input type="checkbox" id="remember-me-checkbox" className="checkbox-item peer hidden" />
                             <label
@@ -80,7 +80,7 @@ export default function Login() {
                             <span>Remember me</span>
                         </div>
                         <a href="javascript:void(0)" className="text-center text-indigo-600 hover:text-indigo-500">Forgot password?</a>
-                    </div>
+                    </div> */}
                     <button
                         type="submit"
                         className="w-full px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150"
@@ -88,7 +88,7 @@ export default function Login() {
                         Log in
                     </button>
                 </form>
-                <button className="w-full flex items-center justify-center gap-x-3 py-2.5 border rounded-lg text-sm font-medium hover:bg-gray-50 duration-150 active:bg-gray-100">
+                {/* <button className="w-full flex items-center justify-center gap-x-3 py-2.5 border rounded-lg text-sm font-medium hover:bg-gray-50 duration-150 active:bg-gray-100">
                     <svg className="w-5 h-5" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_17_40)">
                             <path d="M47.532 24.5528C47.532 22.9214 47.3997 21.2811 47.1175 19.6761H24.48V28.9181H37.4434C36.9055 31.8988 35.177 34.5356 32.6461 36.2111V42.2078H40.3801C44.9217 38.0278 47.532 31.8547 47.532 24.5528Z" fill="#4285F4" />
@@ -103,7 +103,7 @@ export default function Login() {
                         </defs>
                     </svg>
                     Continue with Google
-                </button>
+                </button> */}
                 <p className="text-center">Don't have an account? <a href="register" className="font-medium text-indigo-600 hover:text-indigo-500">Register</a></p>
             </div>
         </main>
